@@ -1,0 +1,311 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #B22222;
+}
+
+#logo {
+    position: absolute;
+    top: 20px;
+    left: 37%;
+    transform: translateX(-50%);
+    display: flex;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+.csalogo img {
+    max-height: 100%;
+    width: 60%;
+    object-fit: contain;
+}
+
+.welcome {
+    position: absolute;
+    display: flex;
+    text-align: center;
+    top: 350px;
+    left: 70px;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+.container {
+    position: relative;
+    width: 850px;
+    height: 550px;
+    background: #fff;
+    border-radius: 30px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.form-box {
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: #B22222;
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    animation: slideInRight 1s ease-in-out;
+}
+
+form {
+    text-align: center;
+    width: 100%;
+}
+
+.container h1 {
+    font-size: 36px;
+    margin: -10px 0 20px;
+    color: #FFD700;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.input-box {
+    position: relative;
+    margin: 30px 0;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 13px 50px 13px 20px;
+    background: #eee;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+    transition: background 0.3s ease-in-out;
+}
+
+.input-box input:focus {
+    background: #ddd;
+}
+
+.input-box input::placeholder {
+    color: #888;
+    font-weight: 400;
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #333;
+}
+
+.forgot-link {
+    margin: -15px 0 15px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.forgot-link a {
+    font-size: 14.5px;
+    color: #D4AF37;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.forgot-link a:hover {
+    color: #FFD700;
+}
+
+.btn {
+    width: 100%;
+    height: 48px;
+    background: #FFD700;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #B22222;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.btn:hover {
+    background: #8B0000;
+    color: #FFD700;
+    transform: scale(1.05);
+}
+
+.register-container {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-75%);
+    width: 100%;
+    text-align: center;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.registerbtn {
+    width: 200px;
+    height: 48px;
+    background: #B22222;
+    color: #FFFFFF;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.registerbtn:hover {
+    background: #FFD700;
+    color: #8B0000;
+    transform: scale(1.05);
+}
+
+.container p {
+    font-size: 14.5px;
+    margin: 15px 0;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.social-icons a {
+    display: inline-flex;
+    padding: 10px;
+    border: 2px solid #FFD700;
+    border-radius: 8px;
+    font-size: 24px;
+    color: #FFD700;
+    text-decoration: none;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.social-icons a:hover {
+    background: #FFD700;
+    color: #8B0000;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+    header {
+        display: block; /* Ensure the header is visible */
+    }
+
+    #logo, .welcome {
+        display: block; /* Ensure the logo and welcome message are visible */
+        position: static; /* Remove absolute positioning */
+        text-align: center; /* Center the content */
+        transform: none; /* Remove any transformations */
+        margin: 10px 0; /* Add some margin */
+    }
+
+    .csalogo img {
+        width: 100px; /* Adjust logo size for small screens */
+    }
+
+    .welcome h2 {
+        font-size: 18px; /* Adjust font size for small screens */
+    }
+
+    .container {
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 20px;
+    }
+
+    .form-box {
+        position: static;
+        width: 100%;
+        height: auto;
+        background: #B22222;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .container h1 {
+        font-size: 24px;
+        margin: 10px 0;
+    }
+
+    .input-box {
+        margin: 15px 0;
+    }
+
+    .btn {
+        width: 100%;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .container p {
+        font-size: 12px;
+    }
+
+    .social-icons {
+        gap: 10px;
+    }
+
+    .social-icons a {
+        font-size: 20px;
+    }
+}
