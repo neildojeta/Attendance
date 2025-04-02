@@ -17,7 +17,7 @@
         <!-- Logo with Fade-In Animation -->
         <div id="logo" class="fade-in">
             <div class="csalogo">
-                <img src="{% static 'myapp/csalogo.png' %}" alt="CSA Logo">
+                <img src="{% static 'myapp/collegelogo.png' %}" alt="CSA Logo">
             </div>
         </div>
 
@@ -25,12 +25,16 @@
         <div class="welcome fade-in">
             <h2>Welcome to<br>Colegio San Agustin Biñan</h2>
         </div>
-
+        
         <!-- Login Form -->
         <div class="form-box login fade-in">
+            <!-- <div><img src="{% static 'myapp/csalogo.png' %}"></div> -->
             <!-- Update the form action to point to the admin login view -->
             <form action="{% url 'admin_login' %}" method="POST">
                 {% csrf_token %}  <!-- Add CSRF token for security -->
+                <div class="csalogo">
+                    <img src="{% static 'myapp/csalogo.png' %}" alt="CSA Logo">
+                </div>
                 <h1>Login</h1>
 
                 <!-- Username Input -->

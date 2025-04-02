@@ -220,6 +220,7 @@ form {
     color: #8B0000;
 }
 
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
