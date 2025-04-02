@@ -18,11 +18,15 @@ body {
 header {
     text-align: center;
     margin-bottom: 20px;
+    opacity: 0; /* Start hidden */
+    animation: fadeIn 1s ease-in-out forwards;
 }
 
 header h1 {
     font-size: 24px;
     color: #B22222;
+    opacity: 0; /* Start invisible */
+    animation: fadeIn 1s ease-in-out forwards; /* Apply fade-in animation */
 }
 
 #logo {
