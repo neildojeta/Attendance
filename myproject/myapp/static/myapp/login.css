@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sasns-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f5f5f5;
+}
+
+#logo {
+    position: absolute;
+    top: 28px;
+    left: 36%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+.csalogo img{
+    max-height: 100%;
+    width: 60%;
+    object-fit: contain;
+}
+
+.collegelogo {
+    position: absolute;
+    right: 187px; /* Align to the right */
+    width: 100px; /* Adjust width as needed */
+    bottom: 372px;
+}
+
+.collegelogo img {
+    max-height: 150px;
+    width: auto;
+    object-fit: contain;
+}
+
+
+.welcome {
+    position: absolute;
+    display: flex;
+    text-align: center;
+    top: 350px;
+    left: 70px;
+}
+
+.container {
+    position: relative;
+    width: 850px;
+    height: 550px;
+    background: #ffff;
+    border-radius: 30px;
+    box-shadow: 0 0 50px rgba(0,0,0,.2);
+    outline: 200px;
+}
+
+.form-box {
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: #b30000;
+    display: flex;
+    align-items: center;
+    padding: 40px;
+}
+
+form {
+    transform: translateY(17%);
+    text-align: center;
+    width: 100%;   
+}
+
+.container h1 {
+    font-size: 36px;
+    margin: -10px 0;
+    color: #FFD700;
+}
+
+.input-box {
+    position: relative;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 13px 50px 13px 20px;
+    background: #eee;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.input-box input::placeholder {
+    color: #888;
+    font-weight: 400;
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #333;
+}
+
+.forgot-link {
+    margin: -15px 0 15px;
+}
+
+.forgot-link a {
+    font-size: 14.5px;
+    color: #D4AF37;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.btn {
+    width: 100%;
+    height: 48px;
+    background: #FFD700;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,-1);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #B22222;
+    font-weight: 600;
+}
+
+.btn:hover {
+    background: #8B0000;
+    color: #FFD700;
+}
+
+.register-container {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-75%);
+    width: 100%;
+    text-align: center;
+}
+
+.registerbtn {
+    width: 200px; /* Adjust size */
+    height: 48px;
+    background: #b30000; /* Red */
+    color: #FFFFFF; /* White */
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out;
+}
+
+.registerbtn:hover {
+    background:#FFD700;
+    color: #8B0000;
+}
+
+/*.container p {
+    font-size: 14.5px;
+    margin: 15px 0;
+}
+
+.social-icons a {
+    display: inline-flex;
+    padding: 10px;
+    border: 2px solid #FFD700;
+    border-radius: 8px;
+    font-size: 24px;
+    color: #FFD700;
+    text-decoration: none;
+    margin: 0 8px;
+}
+
+.social-icons a:hover {
+    background: #FFD700;
+    color:#8B0000;
+}*/
+
+/* Website 2 */
+
+
+
+

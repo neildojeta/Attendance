@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 900px;
+    height: 550px;
+    display: flex;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+}
+
+.left-side {
+    width: 55%;
+    background: #990000; /* Red */
+    color: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.right-side {
+    width: 45%;
+    background: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.logo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+.side-logo {
+    width: 250px;
+    margin-bottom: 20px;
+}
+
+.left-side h2 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    color: #FFD700; /* Gold */
+}
+
+.right-side h3 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.right-side h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #990000;
+}
+
+.input-box {
+    width: 140%;
+    margin-left: -20%;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #333;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    background: #eee;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-yellow {
+    width: 100%;
+    padding: 12px;
+    background: #FFD700;
+    color: #000;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-yellow:hover {
+    background: #800000;
+    color: #FFD700;
+}
+
+.btn-red {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 30px;
+    background: #990000;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-red:hover {
+    background: #FFD700;
+    color: #800000;
+}

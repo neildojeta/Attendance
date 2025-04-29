@@ -1,71 +1,161 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Form</title>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="{% static 'myapp/styles.css' %}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="stylelanding.css" />
+  <link rel="icon" type="image/png" href="college.png">
+  <title>School Website</title>
 </head>
+
 <body>
-    <!-- Header with Fade-In Animation -->
-    <header class="fade-in">
-        <h1>Attendance Monitoring System</h1>
+
+    <header id="header">
+        <!-- Logo Section -->
+        <div class="logo-box">
+          <a href="#" class="logo-link">
+            <img src="red2.png" alt="School Logo" class="logo-image" />
+            <span class="logo-text ">CSA Biñan</span>
+          </a>
+        </div>
+      
+        <!-- Navigation Menu -->
+        <nav class="menu">
+          <ul class="menu-list">
+            <li><a href="#home" class="menu-link">Home</a></li>
+            <li><a href="#about" class="menu-link">About</a></li>
+            <li><a href="#contacts" class="menu-link">Contacts</a></li>
+          </ul>
+        </nav>
+      
+        <!-- Buttons Section -->
+        <div class="buttons">
+          <a href="web1.html">
+            <button class="btn login-btn">Login</button>
+          </a>
+          <button class="btn signup-btn">Sign Up</button>
+        </div>
     </header>
+    
+    <div class="vh" id="home">
+        <h1>Student Attendance<br> Monitoring System</h1>
+        <hr>
+        <h2>By College Department</h2>
+        <button class="start-btn">Get Started</button>
+        <img src="college.png" class="college-logo"/>
+    </div>
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Logo with Fade-In Animation -->
-        <div id="logo" class="fade-in">
-            <div class="csalogo">
-                <img src="{% static 'myapp/collegelogo.png' %}" alt="CSA Logo">
+    <hr>
+
+    <div class="vh" id="about">
+        <div class="box-outline">
+            <div class="flexbox">
+                <img src="college.png" class="minilogo"/>
+                <img src="red2.png" class="minilogo2"/>
             </div>
-        </div>
-
-        <!-- Welcome Message with Fade-In Animation -->
-        <div class="welcome fade-in">
-            <h2>Welcome to<br>Colegio San Agustin Biñan</h2>
-        </div>
-        
-        <!-- Login Form -->
-        <div class="form-box login fade-in">
-            <!-- <div><img src="{% static 'myapp/csalogo.png' %}"></div> -->
-            <!-- Update the form action to point to the admin login view -->
-            <form action="{% url 'admin_login' %}" method="POST">
-                {% csrf_token %}  <!-- Add CSRF token for security -->
-                <div class="csalogo">
-                    <img src="{% static 'myapp/csalogo.png' %}" alt="CSA Logo">
-                </div>
-                <h1>Login</h1>
-
-                <!-- Username Input -->
-                <div class="input-box">
-                    <input type="text" name="username" placeholder="Username" required>
-                    <i class='bx bxs-user'></i>
-                </div>
-
-                <!-- Password Input -->
-                <div class="input-box">
-                    <input type="password" name="password" placeholder="Password" required>
-                    <i class='bx bxs-lock-alt'></i>
-                </div>
-
-                <!-- Forgot Password Link -->
-                <div class="forgot-link">
-                    <a href="#">Forgot password?</a>
-                </div>
-
-                <!-- Login Button -->
-                <button type="submit" class="btn">Login</button>
-
-                <!-- Social Login Options -->
-                <!-- <p>or login with social platforms</p>
-                <div class="social-icons">
-                    <a href="#"><i class='bx bxl-google'></i></a>
-                    <a href="#"><i class='bx bxl-facebook'></i></a>
-                    <a href="#"><i class='bx bxl-linkedin'></i></a>
-                </div> -->
-            </form>
+            <h2>About</h2>
+            <p>A <b style="color: #b30000">Student Attendance Monitoring System</b> plays a crucial role in ensuring effective tracking of student attendance, both in regular classes and during special events. It facilitates accurate and real-time record-keeping, ensuring that students are present and accounted for, whether they are attending routine lessons or participating in school events such as workshops, field trips, or extracurricular activities. By providing an efficient means of tracking attendance during events, the system enhances logistical coordination, safety measures, and communication. Additionally, it allows schools to identify students who may have missed vital academic or co-curricular activities, offering opportunities for follow-up and support. Ultimately, the system improves overall organizational efficiency, contributing to better management of student participation and attendance across both routine and special school activities.</p>
         </div>
     </div>
+
+    <hr>
+
+    <div class="vh" id="contacts">
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <div class="info-box">
+            <i class="icon">📍</i>
+            <h3>LOCATION</h3>
+            <p>Southwoods<br>Biñan City, Laguna</p>
+          </div>
+          <div class="info-box">
+            <i class="icon">📞</i>
+            <h3>PHONE NUMBER</h3>
+            <p>234-9876-5400<br>888-0123-4567</p>
+          </div>
+          <div class="info-box">
+            <i class="icon">📠</i>
+            <h3>FAX</h3>
+            <p>1-234-567-8900</p>
+          </div>
+          <div class="info-box">
+            <i class="icon">✉️</i>
+            <h3>EMAIL</h3>
+            <p><a href="mailto:hello@theme.com">csa-binan.edu.com</a></p>
+          </div>
+        </div>
+        <div class="contact-form">
+          <h2>Contact Us</h2>
+          <form>
+            <input type="text" placeholder="Enter your Name" required />
+            <input type="email" placeholder="Enter a valid email address" required />
+            <textarea placeholder="Your message" rows="5" required></textarea>
+            <button type="submit">SUBMIT</button>
+          </form>
+          <div class="social-media">
+            <a href="https://www.facebook.com" class="social-icon" aria-label="Facebook" target="_blank">
+              <i class='bx bxl-facebook'></i>
+            </a>
+            <a href="https://x.com" class="social-icon" aria-label="X" target="_blank">
+              <i class='bx bxl-twitter'></i>
+            </a>
+            <a href="https://www.instagram.com" class="social-icon" aria-label="Instagram" target="_blank">
+              <i class='bx bxl-instagram'></i>
+            </a>
+          </div>                            
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      const sections = document.querySelectorAll('.vh');
+      const navLinks = document.querySelectorAll('.menu-link');
+    
+      function updateActiveLink() {
+        let currentSection = 'home'; // default to home
+    
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.3) {
+            currentSection = section.id;
+          }
+        });
+    
+        navLinks.forEach((link) => {
+          link.style.color = link.textContent.toLowerCase() === currentSection ? 'gold' : 'white';
+        });
+      }
+    
+      // Run once on load
+      window.addEventListener('DOMContentLoaded', updateActiveLink);
+    
+      // Update on scroll
+      window.addEventListener('scroll', () => {
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          section.classList.toggle('visible', rect.top < window.innerHeight && rect.bottom >= 0);
+        });
+        updateActiveLink();
+      });
+    
+      // Optional: smooth scroll to sections
+      document.querySelectorAll('.menu-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.textContent.toLowerCase();
+          const targetSection = document.getElementById(targetId);
+          if (targetSection) {
+            window.scrollTo({
+              top: targetSection.offsetTop,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    </script>
+    
 </body>
 </html>
