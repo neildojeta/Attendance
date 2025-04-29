@@ -184,7 +184,7 @@ div.vh {
 }
 
 #about {
-    background: url('myapp/static/myapp/bg.png') no-repeat center center/cover;
+    background: url('bg.png') no-repeat center center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -228,7 +228,7 @@ div.vh {
 }
 
 #contacts {
-    background: url('1.png') no-repeat center center/cover;
+    background: url('sch.png') no-repeat center center/cover;
     position: relative;
     height: 90vh;
 }
