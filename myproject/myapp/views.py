@@ -63,6 +63,10 @@ def admin_login(request):
 
     return render(request, "myapp/home1.html")
 
+def register_view(request):
+    # return redirect("register")
+    return render(request, 'myapp/register.html')
+
 def admin_dashboard(request):
     if "username" not in request.session:
         return redirect("admin_login")  # Redirect to login if not authenticated
