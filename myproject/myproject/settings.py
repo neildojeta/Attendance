@@ -83,11 +83,20 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 #     }
 # }
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'newstudentattendance',
+    #     'USER': 'root',
+    #     'PASSWORD': 'Killisme202004',
+    #     'HOST': 'localhost',  # or your MySQL server
+    #     'PORT': '3306',
+    # }
+
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'newstudentattendance',
+        'NAME': 'student_attendance',
         'USER': 'root',
-        'PASSWORD': 'Killisme202004',
+        'PASSWORD': 'studentattendance',
         'HOST': 'localhost',  # or your MySQL server
         'PORT': '3306',
     }

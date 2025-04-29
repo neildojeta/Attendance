@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,8 +7,9 @@
 
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="stylelanding.css" />
-  <link rel="icon" type="image/png" href="college.png">
+
+  <link rel="stylesheet" href="{% static 'myapp/stylelanding.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'myapp/college.png' %}">
   <title>School Website</title>
 </head>
 
@@ -17,7 +19,7 @@
         <!-- Logo Section -->
         <div class="logo-box">
           <a href="#" class="logo-link">
-            <img src="red2.png" alt="School Logo" class="logo-image" />
+            <img src="{% static 'myapp/red2.png' %}" alt="School Logo" class="logo-image" />
             <span class="logo-text ">CSA Biñan</span>
           </a>
         </div>
@@ -45,7 +47,7 @@
         <hr>
         <h2>By College Department</h2>
         <button class="start-btn">Get Started</button>
-        <img src="college.png" class="college-logo"/>
+        <img src="{% static 'myapp/college.png' %}" class="college-logo"/>
     </div>
 
     <hr>
@@ -53,8 +55,8 @@
     <div class="vh" id="about">
         <div class="box-outline">
             <div class="flexbox">
-                <img src="college.png" class="minilogo"/>
-                <img src="red2.png" class="minilogo2"/>
+                <img src="{% static 'myapp/college.png' %}" class="minilogo"/>
+                <img src="{% static 'myapp/red2.png' %}" class="minilogo2"/>
             </div>
             <h2>About</h2>
             <p>A <b style="color: #b30000">Student Attendance Monitoring System</b> plays a crucial role in ensuring effective tracking of student attendance, both in regular classes and during special events. It facilitates accurate and real-time record-keeping, ensuring that students are present and accounted for, whether they are attending routine lessons or participating in school events such as workshops, field trips, or extracurricular activities. By providing an efficient means of tracking attendance during events, the system enhances logistical coordination, safety measures, and communication. Additionally, it allows schools to identify students who may have missed vital academic or co-curricular activities, offering opportunities for follow-up and support. Ultimately, the system improves overall organizational efficiency, contributing to better management of student participation and attendance across both routine and special school activities.</p>
