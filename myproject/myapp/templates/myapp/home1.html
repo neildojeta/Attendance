@@ -42,13 +42,25 @@
         </div>
     </header>
     
-    <div class="vh" id="home">
+    <!-- <div class="vh" id="home">
         <h1>Student Attendance<br> Monitoring System</h1>
         <hr>
         <h2>By College Department</h2>
         <button class="start-btn">Get Started</button>
         <img src="{% static 'myapp/college.png' %}" class="college-logo"/>
-    </div>
+    </div> -->
+
+    <section id="home">
+      <div class="container home-layout">
+        <div class="home-text">
+          <h1>Student Attendance Monitoring System</h1>
+          <h2>By College Department</h2>
+          <hr />
+          <button class="start-btn">Get Started</button>
+        </div>
+        <img class="college-logo" src="{% static 'myapp/college.png' %}" alt="CSA College Logo" />
+      </div>
+    </section>    
 
     <hr>
 
@@ -145,18 +157,22 @@
     
       // Optional: smooth scroll to sections
       document.querySelectorAll('.menu-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const targetId = link.textContent.toLowerCase();
-          const targetSection = document.getElementById(targetId);
-          if (targetSection) {
-            window.scrollTo({
-              top: targetSection.offsetTop,
-              behavior: 'smooth'
-            });
-          }
-        });
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.textContent.toLowerCase();
+        const targetSection = document.getElementById(targetId);
+
+        if (targetSection) {
+          // Adjust the scroll position: subtract the header height and an extra 40px for a bit lower scroll
+          const offsetTop = targetSection.offsetTop - document.getElementById('header').offsetHeight + 40;
+
+          window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+          });
+        }
       });
+    });
     </script>
     
 </body>
