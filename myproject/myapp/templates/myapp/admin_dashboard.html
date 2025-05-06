@@ -1,9 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-    <h1>Welcome, Admin</h1>
+    <!-- Sidebar -->
+    <header id="header">
+        <div class="logo-container">
+            <img src="college.png" alt="CSA Logo">
+        </div>
+        <div class="redcontainer">
+            <h1>Welcome, Admin</h1>
+        </div>
+        <nav class="nav">
+            <a href="#">Students</a>
+            <a href="#">Faculty</a>
+            <a href="#">Events</a>
+        </nav>
+    </header>        
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="scrollable-table">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>ID Number</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1001</td>
+                        <td>admin@example.com</td>
+                        <td>••••••</td>
+                    </tr>
+                    <tr>
+                        <td>1002</td>
+                        <td>user@example.com</td>
+                        <td>••••••</td>
+                    </tr>
+                    <!-- Add more rows if needed -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 </html>

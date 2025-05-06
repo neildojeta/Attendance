@@ -8,7 +8,7 @@
 body {
     overflow-x: hidden;
     background-color: white;
-    margin-top: 0; /* ✅ Fix unwanted scroll gap above */
+    margin-top: 0;
 }
 
 html {
@@ -214,7 +214,6 @@ div.vh {
         font-size: 1.75rem;
     }
 
-    /* ✅ About section adjusts on large screens */
     #about .box-outline {
         width: 1000px;
         height: auto;
@@ -224,7 +223,6 @@ div.vh {
         font-size: 2.5rem;
     }
 
-    /* ✅ Contacts layout adjusts */
     .contact-wrapper {
         gap: 50px;
         padding: 80px 60px;
