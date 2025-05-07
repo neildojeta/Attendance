@@ -14,22 +14,30 @@
         <div class="left-side">
             <img src="{% static 'myapp/red2.png' %}" alt="CSA Logo" class="logo">
             <h2>Sign Up</h2>
-            <form action="#">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post" action="{% url 'register' %}" onsubmit="return validateForm()">
+                {% csrf_token %}
                 <div class="input-box">
                     <i class='bx bxs-envelope'></i>
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" name="email" placeholder="Email" required>
                 </div>
-                
+
                 <div class="input-box">
                     <i class='bx bxs-lock-alt'></i>
-                    <input type="password" placeholder="Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
-                
+
                 <div class="input-box">
                     <i class='bx bxs-lock-alt'></i>
-                    <input type="password" placeholder="Confirm Password" required>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
                 </div>
-                
+
                 <button type="submit" class="btn-yellow">Register</button>
             </form>
         </div>
@@ -38,8 +46,28 @@
             <h3>Welcome to</h3>
             <h1>Colegio San Agustin Biñan</h1>
             <p>Already have an account?</p>
-            <a href="#" class="btn-red">Login</a>
+            <a href="{% url 'login' %}" class="btn-red">Login</a>
         </div>
     </div>
+
+    <script>
+        function validateForm() {
+            const password = document.getElementById("password").value;
+            const confirm = document.getElementById("confirm_password").value;
+
+            if (password !== confirm) {
+                alert("Passwords do not match.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    {% if redirect_after_success %}
+    <script>
+        setTimeout(function() {
+            window.location.href = "{% url 'admin_login' %}";
+        }, 3000); // 3-second delay
+    </script>
+    {% endif %}    
 </body>
 </html>

@@ -17,6 +17,11 @@ urlpatterns = [
     path('', views.admin_login, name='admin_login'),
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
-    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    
     path('logout/', views.logout_view, name='logout'),
+
+    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path("add_student/", views.add_student, name="add_student"),
+    path('update_approval/<str:username>/<str:status>/', views.update_approval, name='update_approval'),
+    path('delete_user/<str:username>/', views.delete_user, name='delete_user'),
 ]
