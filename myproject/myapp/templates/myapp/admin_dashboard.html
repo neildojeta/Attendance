@@ -1,15 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="{% static 'myapp/admin.css' %}">
 </head>
 <body>
     <!-- Sidebar -->
     <header id="header">
         <div class="logo-container">
-            <img src="college.png" alt="CSA Logo">
+            <img src="{% static 'myapp/college.png' %}" alt="CSA Logo">
         </div>
         <div class="redcontainer">
             <h1>Welcome, Admin</h1>
@@ -28,6 +29,7 @@
                 <thead>
                     <tr>
                         <th>ID Number</th>
+                        <th>Name</th>
                         <th>Email</th>
                         <th>Password</th>
                     </tr>
@@ -35,11 +37,13 @@
                 <tbody>
                     <tr>
                         <td>1001</td>
+                        <td>Jonathan Bentog</td>
                         <td>admin@example.com</td>
                         <td>••••••</td>
                     </tr>
                     <tr>
                         <td>1002</td>
+                        <td>Bentong KAbayo</td>
                         <td>user@example.com</td>
                         <td>••••••</td>
                     </tr>

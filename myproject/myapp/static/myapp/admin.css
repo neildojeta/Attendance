@@ -35,15 +35,20 @@ body {
 
 /* Navigation links */
 .nav a {
-    color: white;
-    text-decoration: none;
-    margin: 20px 0;
-    font-size: 18px;
+    background-color: #e60000;
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    text-align: center;
     display: block;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s;
 }
 
 .nav a:hover {
-    text-decoration: underline;
+    background-color: #cc0000;
 }
 
 /* Scrollable table container */
@@ -75,29 +80,12 @@ body {
     margin-bottom: 20px;
 }
 
-.logo-container img {
+/* .logo-container img {
     width: 100px;
     height: auto;
     border-radius: 50%;
     background-color: white;
     padding: 5px;
-}
+} */
 
-/* Styled nav links (buttons) */
-.nav a {
-    background-color: #e60000;
-    padding: 10px 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    text-align: center;
-    display: block;
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s;
-}
-
-.nav a:hover {
-    background-color: #cc0000;
-}
 
