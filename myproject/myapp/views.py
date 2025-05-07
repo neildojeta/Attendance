@@ -67,6 +67,10 @@ def register_view(request):
     # return redirect("register")
     return render(request, 'myapp/register.html')
 
+def login_view(request):
+    # return redirect("register")
+    return render(request, 'myapp/login.html')
+
 def admin_dashboard(request):
     if "username" not in request.session:
         return redirect("admin_login")  # Redirect to login if not authenticated
