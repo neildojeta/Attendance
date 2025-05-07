@@ -49,6 +49,22 @@ body {
     left: 70px;
 }
 
+.btn-register {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #e53935; /* red shade */
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #c62828;
+}
+
 .container {
     position: relative;
     width: 850px;
