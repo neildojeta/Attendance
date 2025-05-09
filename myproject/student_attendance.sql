@@ -292,7 +292,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('5lgbcntvxg4qaou4b5k3yul5bm21nho5','eyJ1c2VybmFtZSI6ImFkbWluIn0:1uCxhr:fSNYP8IGoVODDiegqebi4a3mxl5cZk14MLzusOzg-vg','2025-05-22 09:38:19.514788'),('jms3pv2gq0qesrnh1j9vo0dxukxhy1ut','eyJ1c2VybmFtZSI6ImFkbWluIn0:1tzqvb:ZGVXg2RMS9tu1Sws5joJA7Qd4yqXkbWITYxJPHE1k5U','2025-04-16 05:46:19.416358');
+INSERT INTO `django_session` VALUES ('5lgbcntvxg4qaou4b5k3yul5bm21nho5','eyJ1c2VybmFtZSI6ImFkbWluIn0:1uDDrp:lN-4S5MX8U2e6TgRt4qHY2sdmA2n8DmV2CTHP0iTvg4','2025-05-23 02:53:41.348753'),('jms3pv2gq0qesrnh1j9vo0dxukxhy1ut','eyJ1c2VybmFtZSI6ImFkbWluIn0:1tzqvb:ZGVXg2RMS9tu1Sws5joJA7Qd4yqXkbWITYxJPHE1k5U','2025-04-16 05:46:19.416358');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -364,6 +364,7 @@ CREATE TABLE `faculty` (
   `flastname` varchar(255) DEFAULT NULL,
   `ffirstname` varchar(255) DEFAULT NULL,
   `fmidname` varchar(225) DEFAULT NULL,
+  `faculty_initials` varchar(45) DEFAULT NULL,
   `fcontactno` varchar(45) DEFAULT NULL,
   `faddress` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`faculty_id`),
@@ -377,7 +378,7 @@ CREATE TABLE `faculty` (
 
 LOCK TABLES `faculty` WRITE;
 /*!40000 ALTER TABLE `faculty` DISABLE KEYS */;
-INSERT INTO `faculty` VALUES (1,'Zamora','Zennia','G',NULL,NULL),(2,'Jocosol','Jerome','V',NULL,NULL),(3,'Villamor','Roel','R',NULL,NULL),(4,'Cabahug','Reo','G',NULL,NULL),(5,'Deña','Carla','B',NULL,NULL),(6,'Baclagan','Amelyn Anatalia','R',NULL,NULL),(7,'Suanco','Joshua','R',NULL,NULL),(8,'Genovata','Jeselyne','G',NULL,NULL),(9,'Flores','Dion Jeffrey','G',NULL,NULL),(10,'Galang','Christina','T',NULL,NULL),(11,'Espinili','Priscilla','F',NULL,NULL),(12,'Hilario','Lougene','N',NULL,NULL),(13,'Chua','Carmela','R',NULL,NULL),(14,'Sochaco','Chamberlain','T',NULL,NULL),(15,'Almeda','Allen James','M',NULL,NULL),(16,'Buenaventura','Edna','L',NULL,NULL),(17,'Villacruzada','Marianne','L',NULL,NULL),(18,'Gerodias','Francis','A',NULL,NULL),(19,'Moñiza','Drick','L',NULL,NULL),(20,'Alcopra','Anica Leska','N',NULL,NULL),(21,'Alvarez','Czar Emmanuel','V',NULL,NULL),(22,'Escapalao','Love Aiza','B',NULL,NULL),(23,'Ozaeta','Mark Anthony','A',NULL,NULL),(24,'Breis','Dolores','F',NULL,NULL),(25,'Magin','Rodel','D',NULL,NULL),(26,'Apa-ap','Rey Allan','A',NULL,NULL),(27,'Segubre','Angustia','S',NULL,NULL),(28,'Calantog','J. Mhor\'s','T',NULL,NULL);
+INSERT INTO `faculty` VALUES (1,'Zamora','Zennia','G','ZGZ',NULL,NULL),(2,'Jocosol','Jerome','V','JVJ',NULL,NULL),(3,'Villamor','Roel','R','RRV',NULL,NULL),(4,'Cabahug','Reo','G','RGC',NULL,NULL),(5,'Deña','Carla','B','CBD',NULL,NULL),(6,'Baclagan','Amelyn Anatalia','R','AARB',NULL,NULL),(7,'Suanco','Joshua','R','JRS',NULL,NULL),(8,'Genovata','Jeselyne','G','JGG',NULL,NULL),(9,'Flores','Dion Jeffrey','G','DJGF',NULL,NULL),(10,'Galang','Christina','T','CTG',NULL,NULL),(11,'Espinili','Priscilla','F','PFE',NULL,NULL),(12,'Hilario','Lougene','N','LNH',NULL,NULL),(13,'Chua','Carmela','R','CRC',NULL,NULL),(14,'Sochaco','Chamberlain','T','CTS',NULL,NULL),(15,'Almeda','Allen James','M','AJMA',NULL,NULL),(16,'Buenaventura','Edna','L','ELB',NULL,NULL),(17,'Villacruzada','Marianne','L','MLV',NULL,NULL),(18,'Gerodias','Francis','A','FAG',NULL,NULL),(19,'Moñiza','Drick','L','DLM',NULL,NULL),(20,'Alcopra','Anica Leska','N','ALNA',NULL,NULL),(21,'Alvarez','Czar Emmanuel','V','CEVA',NULL,NULL),(22,'Escapalao','Love Aiza','B','LABE',NULL,NULL),(23,'Ozaeta','Mark Anthony','A','MAAO',NULL,NULL),(24,'Breis','Dolores','F','DFB',NULL,NULL),(25,'Magin','Rodel','D','RDM',NULL,NULL),(26,'Apa-ap','Rey Allan','A','RAAA',NULL,NULL),(27,'Segubre','Angustia','S','ASS',NULL,NULL),(28,'Calantog','J. Mhor\'s','T','JMTC',NULL,NULL);
 /*!40000 ALTER TABLE `faculty` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -672,4 +673,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-08 17:42:29
+-- Dump completed on 2025-05-09 16:58:03
