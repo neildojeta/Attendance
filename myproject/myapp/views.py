@@ -29,11 +29,6 @@ def admin_login(request):
 
     return render(request, "myapp/home1.html")
 
-# def register_view(request):
-#     # return redirect("register")
-#     return render(request, 'myapp/register.html')
-from django.shortcuts import render, redirect
-from django.contrib import messages
 
 def register_view(request):
     if request.method == "POST":
@@ -64,13 +59,9 @@ def register_view(request):
 
 
 def login_view(request):
-    # return redirect("register")
     return render(request, 'myapp/login.html')
 
-# def admin_dashboard(request):
-#     if "username" not in request.session:
-#         return redirect("admin_login")  # Redirect to login if not authenticated
-#     return render(request, "myapp/admin_dashboard.html")
+
 def admin_dashboard(request):
     if "username" not in request.session:
         return redirect("admin_login")  # Redirect to login if not authenticated
@@ -84,42 +75,49 @@ def admin_dashboard(request):
     search_users = request.GET.get("search_users", "").strip()
     search_students = request.GET.get("search_students", "").strip()
 
+    # Handle the selected tab (students, faculty, etc.)
+    tab = request.GET.get('tab', 'students')  # Default to 'students' tab if not provided
+
     if conn:
         try:
             cursor = conn.cursor()
 
-            # Filter users table (Student Approval)
-            if search_users:
-                cursor.execute("""
-                    SELECT username, password, usertype, approved 
-                    FROM users 
-                    WHERE usertype NOT IN ('admin', 'faculty') AND username LIKE %s
-                """, ('%' + search_users + '%',))
-            else:
-                cursor.execute("""
-                    SELECT username, password, usertype, approved 
-                    FROM users 
-                    WHERE usertype NOT IN ('admin', 'faculty')
-                """)
-            register_student_data = cursor.fetchall()
+            if tab == 'students':
+                # Filter student_enrollment table (Student Records)
+                if search_students:
+                    query = """
+                        SELECT student_id, studentname, year_level, course 
+                        FROM student_enrollment 
+                        WHERE studentname LIKE %s 
+                        OR student_id LIKE %s 
+                        OR year_level LIKE %s 
+                        OR course LIKE %s
+                    """
+                    wildcard = f"%{search_students}%"
+                    cursor.execute(query, (wildcard, wildcard, wildcard, wildcard))
+                else:
+                    cursor.execute("SELECT student_id, studentname, year_level, course FROM student_enrollment")
+                student_records_data = cursor.fetchall()
 
-            # Filter student_enrollment table (Student Records)
-            if search_students:
-                query = """
-                    SELECT student_id, studentname, year_level, course 
-                    FROM student_enrollment 
-                    WHERE studentname LIKE %s 
-                    OR student_id LIKE %s 
-                    OR year_level LIKE %s 
-                    OR course LIKE %s
-                """
-                wildcard = f"%{search_students}%"
-                cursor.execute(query, (wildcard, wildcard, wildcard, wildcard))
-            else:
-                cursor.execute("SELECT student_id, studentname, year_level, course FROM student_enrollment")
-            student_records_data = cursor.fetchall()
+                # Filter users table (Student Approval)
+                if search_users:
+                    cursor.execute("""
+                        SELECT username, password, usertype, approved 
+                        FROM users 
+                        WHERE usertype NOT IN ('admin', 'faculty') AND username LIKE %s
+                    """, ('%' + search_users + '%',))
+                else:
+                    cursor.execute("""
+                        SELECT username, password, usertype, approved 
+                        FROM users 
+                        WHERE usertype NOT IN ('admin', 'faculty')
+                    """)
+                register_student_data = cursor.fetchall()
 
-            # Fetch data for dropdowns
+            # elif tab == 'faculty':
+                
+
+            # Fetch data for dropdowns (programs and year levels)
             cursor.execute("SELECT programcode FROM programs")
             programs = [row[0] for row in cursor.fetchall()]
 
@@ -136,6 +134,7 @@ def admin_dashboard(request):
         "search_students": search_students,
         "programs": programs,
         "yearlvls": yearlvls,
+        "tab": tab,  # Pass the selected tab to the template
     })
 
 
@@ -154,6 +153,7 @@ def update_approval(request, username, status):
                 conn.close()
     return JsonResponse({"success": False, "error": "Invalid request"})
 
+
 def delete_user(request, username):
     if request.method == "POST":
         conn = create_connection()
@@ -168,6 +168,7 @@ def delete_user(request, username):
             finally:
                 conn.close()
     return JsonResponse({"success": False, "error": "Invalid request"})
+
 
 @csrf_exempt
 def add_student(request):
@@ -192,6 +193,7 @@ def add_student(request):
             finally:
                 conn.close()
     return JsonResponse({"success": False, "error": "Invalid request"})
+
 
 @csrf_exempt
 def update_student(request):
@@ -221,6 +223,7 @@ def update_student(request):
             finally:
                 conn.close()
     return JsonResponse({"success": False, "error": "Invalid request"})
+
 
 def delete_student(request, student_id):
     if request.method == "POST":
