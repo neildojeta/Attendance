@@ -1,24 +1,37 @@
+# from django.urls import path
+# from . import views
+
+# # urlpatterns = [
+# #     path('', views.home, name='home'),
+# # ]
+# urlpatterns = [
+#     path('', views.admin_login, name='admin_login'),
+#     path('', views.admin_dashboard, name='admin_dashboard'),
+#     # path("admin_login/", admin_login, name="admin_login"),
+# ]
+
 from django.urls import path
 from . import views
+from . import student_views
+from . import user_views
+from . import faculty_views
 
 urlpatterns = [
-    # Admin login
     path('', views.admin_login, name='admin_login'),
     path('login/', views.login_view, name='login'),
-    path('register/', views.register_view, name='register'),
-    
-    # Admin dashboard
-    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    
-    # Student management
-    path('add_student/', views.add_student, name='add_student'),
-    path('update_student/', views.update_student, name='update_student'),
-    path('delete_student/<str:student_id>/', views.delete_student, name='delete_student'),
-    
-    # User management
-    path('update_approval/<str:username>/<str:status>/', views.update_approval, name='update_approval'),
-    path('delete_user/<str:username>/', views.delete_user, name='delete_user'),
-    
-    # Logout
+    path('register/', user_views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
+    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
+
+    # Student-related views
+    path("add_student/", student_views.add_student, name="add_student"),
+    path("update_student/", student_views.update_student, name="update_student"),
+    path('delete_student/<str:student_id>/', student_views.delete_student, name='delete_student'),
+
+    path('update_approval/<str:username>/<str:status>/', user_views.update_approval, name='update_approval'),
+    path('delete_user/<str:username>/', user_views.delete_user, name='delete_user'),
+
+    path('add_faculty/', faculty_views.add_faculty, name='add_faculty'),
+    path('update_faculty/', faculty_views.update_faculty, name='update_faculty'),
+    path('delete_faculty/<str:faculty_id>/', faculty_views.delete_faculty, name='delete_faculty'),
 ]

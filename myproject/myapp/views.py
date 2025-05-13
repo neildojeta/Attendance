@@ -5,6 +5,8 @@ from db_config import create_connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+# from .student_views import add_student, update_student, delete_student 
+
 def admin_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -29,35 +31,6 @@ def admin_login(request):
 
     return render(request, "myapp/home1.html")
 
-
-def register_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
-
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match.")
-            return render(request, 'myapp/register.html')
-
-        conn = create_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
-                cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (email, password))
-                conn.commit()
-                messages.success(request, "Registration successful. Redirecting to login...")
-                return render(request, 'myapp/register.html', {'redirect_after_success': True})
-            except Exception as e:
-                messages.error(request, f"Registration failed: {str(e)}")
-            finally:
-                conn.close()
-        else:
-            messages.error(request, "Database connection failed.")
-
-    return render(request, 'myapp/register.html')
-
-
 def login_view(request):
     return render(request, 'myapp/login.html')
 
@@ -69,11 +42,13 @@ def admin_dashboard(request):
     conn = create_connection()
     register_student_data = []
     student_records_data = []
+    faculty_data = []
     programs = []
     yearlvls = []
 
     search_users = request.GET.get("search_users", "").strip()
     search_students = request.GET.get("search_students", "").strip()
+    search_faculty = request.GET.get("search_faculty", "").strip()
 
     # Handle the selected tab (students, faculty, etc.)
     tab = request.GET.get('tab', 'students')  # Default to 'students' tab if not provided
@@ -114,8 +89,19 @@ def admin_dashboard(request):
                     """)
                 register_student_data = cursor.fetchall()
 
-            # elif tab == 'faculty':
-                
+            elif tab == 'faculty':
+                if search_faculty:
+                    cursor.execute("""
+                        SELECT faculty_id, flastname, ffirstname, fmidname, faculty_initials
+                        FROM faculty 
+                        WHERE flastname LIKE %s OR ffirstname LIKE %s
+                    """, ('%' + search_faculty + '%', '%' + search_faculty + '%'))
+                else:
+                    cursor.execute("""
+                        SELECT faculty_id, flastname, ffirstname, fmidname, faculty_initials
+                        FROM faculty
+                    """)
+                faculty_data = cursor.fetchall()
 
             # Fetch data for dropdowns (programs and year levels)
             cursor.execute("SELECT programcode FROM programs")
@@ -130,115 +116,14 @@ def admin_dashboard(request):
     return render(request, "myapp/admin_dashboard.html", {
         "register_student_data": register_student_data,
         "student_records_data": student_records_data,
+        "faculty_data": faculty_data,
         "search_users": search_users,
         "search_students": search_students,
+        "search_faculty": search_faculty,
         "programs": programs,
         "yearlvls": yearlvls,
         "tab": tab,  # Pass the selected tab to the template
     })
-
-
-def update_approval(request, username, status):
-    if request.method == "POST":
-        conn = create_connection()
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("UPDATE users SET approved = %s WHERE username = %s", (status, username))
-                conn.commit()
-                return JsonResponse({"success": True})
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-            finally:
-                conn.close()
-    return JsonResponse({"success": False, "error": "Invalid request"})
-
-
-def delete_user(request, username):
-    if request.method == "POST":
-        conn = create_connection()
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM users WHERE username = %s", (username,))
-                conn.commit()
-                return JsonResponse({"success": True})
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-            finally:
-                conn.close()
-    return JsonResponse({"success": False, "error": "Invalid request"})
-
-
-@csrf_exempt
-def add_student(request):
-    if request.method == "POST":
-        student_id = request.POST.get("student_id")
-        studentname = request.POST.get("studentname")
-        year_level = request.POST.get("year_level")
-        course = request.POST.get("course")
-
-        conn = create_connection()
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    INSERT INTO student_enrollment (student_id, studentname, year_level, course)
-                    VALUES (%s, %s, %s, %s)
-                """, (student_id, studentname, year_level, course))
-                conn.commit()
-                return JsonResponse({"success": True})
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-            finally:
-                conn.close()
-    return JsonResponse({"success": False, "error": "Invalid request"})
-
-
-@csrf_exempt
-def update_student(request):
-    if request.method == "POST":
-        student_id = request.POST.get("student_id")
-        studentname = request.POST.get("studentname")
-        year_level = request.POST.get("year_level")
-        course = request.POST.get("course")
-        original_id = request.POST.get("original_id")  # to identify which student to update
-
-        if not original_id:
-            return JsonResponse({"success": False, "error": "Missing original student ID"})
-
-        conn = create_connection()
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    UPDATE student_enrollment
-                    SET student_id = %s, studentname = %s, year_level = %s, course = %s
-                    WHERE student_id = %s
-                """, (student_id, studentname, year_level, course, original_id))
-                conn.commit()
-                return JsonResponse({"success": True})
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-            finally:
-                conn.close()
-    return JsonResponse({"success": False, "error": "Invalid request"})
-
-
-def delete_student(request, student_id):
-    if request.method == "POST":
-        conn = create_connection()
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM student_enrollment WHERE student_id = %s", (student_id,))
-                conn.commit()
-                return JsonResponse({"success": True})
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-            finally:
-                conn.close()
-    return JsonResponse({"success": False, "error": "Invalid request"})
 
 
 def logout_view(request):
