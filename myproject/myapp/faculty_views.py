@@ -4,6 +4,8 @@ from db_config import create_connection
 
 def generate_initials(ffirstname, fmidname, flastname):
     def get_initials(name):
+        if not name:
+            return ''
         parts = name.strip().split()
         return ''.join(part[0] for part in parts if part)
     
@@ -15,13 +17,14 @@ def generate_initials(ffirstname, fmidname, flastname):
     return initials.upper()
 
 
+
 @csrf_exempt
 def add_faculty(request):
     if request.method == "POST":
         faculty_id = request.POST.get("faculty_id")
-        flastname = request.POST.get("flastname")
-        ffirstname = request.POST.get("ffirstname")
-        fmidname = request.POST.get("fmidname")
+        flastname = request.POST.get("facultylastname")
+        ffirstname = request.POST.get("facultyfirstname")
+        fmidname = request.POST.get("facultymidname")
 
         faculty_initials = generate_initials(ffirstname, fmidname, flastname)
 
@@ -46,9 +49,9 @@ def add_faculty(request):
 def update_faculty(request):
     if request.method == "POST":
         faculty_id = request.POST.get("faculty_id")
-        flastname = request.POST.get("flastname")
-        ffirstname = request.POST.get("ffirstname")
-        fmidname = request.POST.get("fmidname")
+        flastname = request.POST.get("facultylastname")
+        ffirstname = request.POST.get("facultyfirstname")
+        fmidname = request.POST.get("facultymidname")
         original_id = request.POST.get("original_id")
 
         if not original_id:

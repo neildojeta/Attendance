@@ -91,17 +91,21 @@ def admin_dashboard(request):
 
             elif tab == 'faculty':
                 if search_faculty:
-                    cursor.execute("""
+                    query = """
                         SELECT faculty_id, flastname, ffirstname, fmidname, faculty_initials
                         FROM faculty 
-                        WHERE flastname LIKE %s OR ffirstname LIKE %s
-                    """, ('%' + search_faculty + '%', '%' + search_faculty + '%'))
+                        WHERE flastname LIKE %s 
+                        OR ffirstname LIKE %s
+                    """
+                    wildcard = f"%{search_faculty}%"
+                    cursor.execute(query, (wildcard, wildcard))
                 else:
                     cursor.execute("""
                         SELECT faculty_id, flastname, ffirstname, fmidname, faculty_initials
                         FROM faculty
                     """)
                 faculty_data = cursor.fetchall()
+
 
             # Fetch data for dropdowns (programs and year levels)
             cursor.execute("SELECT programcode FROM programs")
