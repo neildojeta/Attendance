@@ -15,6 +15,7 @@ from . import views
 from . import student_views
 from . import user_views
 from . import faculty_views
+from . import events_views
 
 urlpatterns = [
     path('', views.admin_login, name='admin_login'),
@@ -34,4 +35,10 @@ urlpatterns = [
     path('add_faculty/', faculty_views.add_faculty, name='add_faculty'),
     path('update_faculty/', faculty_views.update_faculty, name='update_faculty'),
     path('delete_faculty/<str:faculty_id>/', faculty_views.delete_faculty, name='delete_faculty'),
+
+    path('events/fetch/', events_views.get_events, name='get_events'),
+    path('events/add/', events_views.add_event, name='add_event'),
+    path('events/update/', events_views.update_event, name='update_event'),
+    path('events/delete/', events_views.delete_event, name='delete_event'),
+
 ]
