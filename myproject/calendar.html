@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Working Calendar</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <style>
+    #calendar-container { max-width: 900px; margin: 30px auto; }
+    .calendar-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="calendar-controls">
+    <select id="month-selector" class="form-select w-auto"></select>
+    <select id="year-selector" class="form-select w-auto"></select>
+  </div>
+
+  <div id="calendar-container">
+    <div id="calendar"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog">
+      <form id="eventForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Event</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="event-id">
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" id="event-title" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" id="event-date" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" id="deleteBtn" class="btn btn-danger d-none">Delete</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+      const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+      const form = document.getElementById('eventForm');
+      const deleteBtn = document.getElementById('deleteBtn');
+      let selectedEvent = null;
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        selectable: true,
+        events: [],
+        dateClick: function (info) {
+          selectedEvent = null;
+          form.reset();
+          document.getElementById('event-id').value = '';
+          document.getElementById('event-date').value = info.dateStr;
+          deleteBtn.classList.add('d-none');
+          modal.show();
+        },
+        eventClick: function (info) {
+          selectedEvent = info.event;
+          document.getElementById('event-id').value = info.event.id;
+          document.getElementById('event-title').value = info.event.title;
+          document.getElementById('event-date').value = info.event.startStr;
+          deleteBtn.classList.remove('d-none');
+          modal.show();
+        }
+      });
+
+      calendar.render();
+
+      // Save event
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const id = document.getElementById('event-id').value;
+        const title = document.getElementById('event-title').value;
+        const date = document.getElementById('event-date').value;
+
+        if (id) {
+          const ev = calendar.getEventById(id);
+          ev.setProp('title', title);
+          ev.setStart(date);
+        } else {
+          calendar.addEvent({
+            id: String(Date.now()),
+            title: title,
+            start: date,
+            allDay: true
+          });
+        }
+
+        modal.hide();
+      });
+
+      // Delete event
+      deleteBtn.addEventListener('click', function () {
+        if (selectedEvent) {
+          selectedEvent.remove();
+        }
+        modal.hide();
+      });
+
+      // Populate dropdowns
+      const monthSelector = document.getElementById('month-selector');
+      const yearSelector = document.getElementById('year-selector');
+      const now = new Date();
+      for (let i = 0; i < 12; i++) {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.text = new Date(0, i).toLocaleString('default', { month: 'long' });
+        monthSelector.appendChild(opt);
+      }
+      for (let y = 2000; y <= 2030; y++) {
+        let opt = document.createElement('option');
+        opt.value = y;
+        opt.text = y;
+        yearSelector.appendChild(opt);
+      }
+      monthSelector.value = now.getMonth();
+      yearSelector.value = now.getFullYear();
+
+      function updateCalendarView() {
+        const m = parseInt(monthSelector.value);
+        const y = parseInt(yearSelector.value);
+        calendar.gotoDate(new Date(y, m, 1));
+      }
+
+      monthSelector.addEventListener('change', updateCalendarView);
+      yearSelector.addEventListener('change', updateCalendarView);
+    });
+  </script>
+</body>
+</html>
