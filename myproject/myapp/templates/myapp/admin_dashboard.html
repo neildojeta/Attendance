@@ -6,6 +6,7 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="{% static 'myapp/admin.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Sidebar -->
@@ -15,12 +16,16 @@
         </div>
         <div class="redcontainer">
             <h1>Welcome, Admin</h1>
+            <nav class="nav">
+                <a href="?tab=students" class="nav-link">Students</a>
+                <a href="?tab=faculty" class="nav-link">Faculty</a>
+                <a href="?tab=events" class="nav-link">Events</a>
+            </nav>
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
         </div>
-        <nav class="nav">
-            <a href="?tab=students" class="nav-link">Students</a>
-            <a href="?tab=faculty" class="nav-link">Faculty</a>
-            <a href="?tab=events" class="nav-link">Events</a>
-        </nav>
     </header>
 
     <!-- Main Content Area -->
@@ -30,7 +35,7 @@
         {% elif tab == 'faculty' %}
             {% include 'myapp/faculty.html' %}
         {% elif tab == 'events' %}
-            {% include 'events.html' %}
+            {% include 'myapp/events.html' %}
         {% else %}
             <h3>Welcome to the Admin Dashboard!</h3>
             <p>Select a section from the sidebar to get started.</p>

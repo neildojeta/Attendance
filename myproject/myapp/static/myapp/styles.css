@@ -32,11 +32,8 @@ header h1 {
 #logo {
     position: absolute;
     top: 20px;
-    left: 37%;
+    left: 38%; /* <-- replace this */
     transform: translateX(-50%);
-    display: flex;
-    opacity: 0;
-    animation: fadeIn 1s ease-in-out forwards;
 }
 
 .csalogo img {
@@ -48,11 +45,16 @@ header h1 {
 .welcome {
     position: absolute;
     display: flex;
-    text-align: center;
-    top: 350px;
-    left: 70px;
+    flex-direction: column; /* stack children vertically */
+    align-items: center;     /* center horizontally */
+    top: 310px;
+    left: 50px;
     opacity: 0;
     animation: fadeIn 1s ease-in-out forwards;
+}
+
+.welcome-text h2 {
+    margin-bottom: 20px;
 }
 
 .container {
@@ -162,6 +164,12 @@ form {
     transform: scale(1.05);
 }
 
+.welcome-text {
+    text-align: center;
+    padding: 20px;
+    color: #8B0000;
+}
+
 .register-container {
     position: absolute;
     bottom: 50px;
@@ -173,21 +181,20 @@ form {
 }
 
 .registerbtn {
-    width: 200px;
-    height: 48px;
-    background: #B22222;
-    color: #FFFFFF;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+    padding: 12px 24px;         /* inside the button */
+    margin-top: 50px;           /* space above the button */
+    background-color: #B22222;
+    color: white;
     font-size: 16px;
-    font-weight: 600;
-    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .registerbtn:hover {
-    background: #FFD700;
-    color: #8B0000;
+    background-color: #8B0000;
     transform: scale(1.05);
 }
 

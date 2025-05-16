@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Form</title>
+    <title>CSA Login</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{% static 'myapp/styles.css' %}">
 </head>
@@ -23,47 +23,46 @@
 
         <!-- Welcome Message with Fade-In Animation -->
         <div class="welcome fade-in">
-            <h2>Welcome to<br>Colegio San Agustin Biñan</h2>
-        </div>
-        
+            <div class="welcome-text">
+                <h2>Welcome to<br>Colegio San Agustin Biñan</h2>
+                <a href="{% url 'register' %}" class="registerbtn">Register</a>
+            </div>
+        </div>                
+
         <!-- Login Form -->
         <div class="form-box login fade-in">
-            <!-- <div><img src="{% static 'myapp/csalogo.png' %}"></div> -->
-            <!-- Update the form action to point to the admin login view -->
             <form action="{% url 'admin_login' %}" method="POST">
-                {% csrf_token %}  <!-- Add CSRF token for security -->
+                {% csrf_token %}
                 <div class="csalogo">
                     <img src="{% static 'myapp/csalogo.png' %}" alt="CSA Logo">
                 </div>
                 <h1>Login</h1>
 
-                <!-- Username Input -->
                 <div class="input-box">
                     <input type="text" name="username" placeholder="Username" required>
                     <i class='bx bxs-user'></i>
                 </div>
 
-                <!-- Password Input -->
                 <div class="input-box">
                     <input type="password" name="password" placeholder="Password" required>
                     <i class='bx bxs-lock-alt'></i>
                 </div>
 
-                <!-- Forgot Password Link -->
                 <div class="forgot-link">
                     <a href="#">Forgot password?</a>
                 </div>
 
-                <!-- Login Button -->
                 <button type="submit" class="btn">Login</button>
 
-                <!-- Social Login Options -->
-                <!-- <p>or login with social platforms</p>
+                <!-- Optional social icons are commented out -->
+                <!-- 
+                <p>or login with social platforms</p>
                 <div class="social-icons">
                     <a href="#"><i class='bx bxl-google'></i></a>
                     <a href="#"><i class='bx bxl-facebook'></i></a>
                     <a href="#"><i class='bx bxl-linkedin'></i></a>
-                </div> -->
+                </div> 
+                -->
             </form>
         </div>
     </div>

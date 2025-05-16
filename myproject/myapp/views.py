@@ -5,14 +5,13 @@ from db_config import create_connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-# from .student_views import add_student, update_student, delete_student 
+# ========== ADMIN VIEWS ==========
 
 def admin_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        # Connect to MySQL
         conn = create_connection()
         if conn:
             cursor = conn.cursor(dictionary=True)
@@ -21,7 +20,6 @@ def admin_login(request):
             conn.close()
 
             if user:
-                # Store session data
                 request.session["username"] = user["username"]
                 return redirect("admin_dashboard")
             else:
@@ -31,13 +29,14 @@ def admin_login(request):
 
     return render(request, "myapp/home1.html")
 
+
 def login_view(request):
     return render(request, 'myapp/login.html')
 
 
 def admin_dashboard(request):
     if "username" not in request.session:
-        return redirect("admin_login")  # Redirect to login if not authenticated
+        return redirect("admin_login")
 
     conn = create_connection()
     register_student_data = []
@@ -50,23 +49,18 @@ def admin_dashboard(request):
     search_students = request.GET.get("search_students", "").strip()
     search_faculty = request.GET.get("search_faculty", "").strip()
 
-    # Handle the selected tab (students, faculty, etc.)
-    tab = request.GET.get('tab', 'students')  # Default to 'students' tab if not provided
+    tab = request.GET.get('tab', 'students')
 
     if conn:
         try:
             cursor = conn.cursor()
 
             if tab == 'students':
-                # Filter student_enrollment table (Student Records)
                 if search_students:
                     query = """
                         SELECT student_id, studentname, year_level, course 
                         FROM student_enrollment 
-                        WHERE studentname LIKE %s 
-                        OR student_id LIKE %s 
-                        OR year_level LIKE %s 
-                        OR course LIKE %s
+                        WHERE studentname LIKE %s OR student_id LIKE %s OR year_level LIKE %s OR course LIKE %s
                     """
                     wildcard = f"%{search_students}%"
                     cursor.execute(query, (wildcard, wildcard, wildcard, wildcard))
@@ -74,7 +68,6 @@ def admin_dashboard(request):
                     cursor.execute("SELECT student_id, studentname, year_level, course FROM student_enrollment")
                 student_records_data = cursor.fetchall()
 
-                # Filter users table (Student Approval)
                 if search_users:
                     cursor.execute("""
                         SELECT username, password, usertype, approved 
@@ -94,8 +87,7 @@ def admin_dashboard(request):
                     query = """
                         SELECT faculty_id, flastname, ffirstname, fmidname, faculty_initials
                         FROM faculty 
-                        WHERE flastname LIKE %s 
-                        OR ffirstname LIKE %s
+                        WHERE flastname LIKE %s OR ffirstname LIKE %s
                     """
                     wildcard = f"%{search_faculty}%"
                     cursor.execute(query, (wildcard, wildcard))
@@ -106,8 +98,7 @@ def admin_dashboard(request):
                     """)
                 faculty_data = cursor.fetchall()
 
-
-            # Fetch data for dropdowns (programs and year levels)
+            # Fetch dropdown data
             cursor.execute("SELECT programcode FROM programs")
             programs = [row[0] for row in cursor.fetchall()]
 
@@ -126,10 +117,100 @@ def admin_dashboard(request):
         "search_faculty": search_faculty,
         "programs": programs,
         "yearlvls": yearlvls,
-        "tab": tab,  # Pass the selected tab to the template
+        "tab": tab,
     })
 
 
 def logout_view(request):
-    request.session.flush()  # Clear session data
+    request.session.flush()
     return redirect("admin_login")
+
+# ========== STUDENT DASHBOARD ==========
+
+def student_dashboard(request):
+    if "username" not in request.session:
+        return redirect("admin_login")
+    tab = request.GET.get('tab', '')
+    return render(request, "myapp/student_dashboard.html", {"tab": tab})
+
+
+# ========== EVENT VIEWS ==========
+
+@csrf_exempt
+def add_event(request):
+    if request.method == "POST":
+        event_id = request.POST.get("event_id")
+        event_name = request.POST.get("event_name")
+        venue = request.POST.get("venue")
+        days = request.POST.get("days")
+        start_time = request.POST.get("start_time")
+        end_time = request.POST.get("end_time")
+        event_date = request.POST.get("event_date")
+
+        conn = create_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                sql = """
+                    INSERT INTO events (event_id, event_name, venue, days, start_time, end_time, event_date)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """
+                cursor.execute(sql, (event_id, event_name, venue, days, start_time, end_time, event_date))
+                conn.commit()
+                return JsonResponse({"success": True})
+            except mysql.connector.Error as err:
+                return JsonResponse({"success": False, "error": str(err)})
+            finally:
+                conn.close()
+        else:
+            return JsonResponse({"success": False, "error": "Database connection failed."})
+
+
+@csrf_exempt
+def update_event(request):
+    if request.method == "POST":
+        event_id = request.POST.get("event_id")
+        event_name = request.POST.get("event_name")
+        venue = request.POST.get("venue")
+        days = request.POST.get("days")
+        start_time = request.POST.get("start_time")
+        end_time = request.POST.get("end_time")
+        event_date = request.POST.get("event_date")
+
+        conn = create_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                sql = """
+                    UPDATE events
+                    SET event_name=%s, venue=%s, days=%s, start_time=%s, end_time=%s, event_date=%s
+                    WHERE event_id=%s
+                """
+                cursor.execute(sql, (event_name, venue, days, start_time, end_time, event_date, event_id))
+                conn.commit()
+                return JsonResponse({"success": True})
+            except mysql.connector.Error as err:
+                return JsonResponse({"success": False, "error": str(err)})
+            finally:
+                conn.close()
+        else:
+            return JsonResponse({"success": False, "error": "Database connection failed."})
+
+
+@csrf_exempt
+def delete_event(request, event_id):
+    if request.method == "POST":
+        conn = create_connection()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                sql = "DELETE FROM events WHERE event_id = %s"
+                cursor.execute(sql, (event_id,))
+                conn.commit()
+                return JsonResponse({"success": True})
+            except mysql.connector.Error as err:
+                return JsonResponse({"success": False, "error": str(err)})
+            finally:
+                conn.close()
+        else:
+            return JsonResponse({"success": False, "error": "Database connection failed."})

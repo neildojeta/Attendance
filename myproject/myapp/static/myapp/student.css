@@ -1,0 +1,253 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f0f4f8;
+    margin-right: 40px;
+    padding: 40px 0;
+    display: flex;
+    justify-content: right;
+    align-items: flex-start;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#header {
+    width: 250px;
+    height: 100vh;
+    background-color: #b30000;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.dashboard-container {
+    background: #ffffff;
+    position: relative;
+    border: 2px solid #B22222;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(178, 34, 34, 0.1);
+    margin-top: 45px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.dashboard-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.user-icon {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    width: 40px;
+    height: 40px;
+    background-color: #FFD700;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-icon img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+}
+
+.info-card, .calendar-section {
+    flex: 1 1 45%;
+}
+
+.info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-row {
+    display: flex;
+    background: #eef2f7;
+    padding: 12px 20px;
+    border-left: 4px solid #FFD700;
+    border-radius: 10px;
+    color: #2d3436;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+/* Label and value separation */
+.info-row strong {
+    width: 140px; /* fixed width for labels */
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.calendar-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #34495e;
+    font-size: 16px;
+}
+
+#calendar {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #dcdde1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fafafa;
+}
+
+.flatpickr-calendar {
+    width: 100% !important;
+    max-width: 100%;
+}
+
+/* Improve Flatpickr calendar visibility */
+.flatpickr-calendar .flatpickr-day {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2c3e50;
+    line-height: 40px;
+    height: 40px;
+    width: 40px;
+    margin: 2px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+/* Highlight selected day */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day:hover {
+    background: #3498db;
+    color: white;
+}
+
+/* Disabled dates */
+.flatpickr-day.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Make sure calendar fills the container */
+.flatpickr-calendar {
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none;
+}
+
+/* Only show current month's days */
+.flatpickr-day.flatpickr-prev-month,
+.flatpickr-day.flatpickr-next-month {
+    display: none !important;
+}
+
+.flatpickr-days {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr); /* 7 even columns */
+    padding: 0;
+    margin: 0;
+}
+
+.flatpickr-day {
+    height: 48px;
+    width: 100% !important;
+    margin: 0 !important;
+    font-size: 15px;
+    font-weight: 500;
+    color: #2c3e50;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    transition: background 0.2s ease;
+}
+
+input[readonly] {
+    display: none;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.attend-btn,
+.timeout-btn {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.attend-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.attend-btn:hover {
+    background: #1e8449;
+}
+
+.timeout-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.timeout-btn:hover {
+    background: #c0392b;
+}
+
+.attend-btn:disabled,
+.timeout-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.timestamp {
+    background: #ecf9ec;
+    border-left: 4px solid #2ecc71;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #2d572c;
+    margin-top: 10px;
+}
+
+.logout-container {
+    text-align: right;
+    margin-top: 10px;
+    padding: 0 20px;
+}
+
+.logout-btn {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c62828;
+}
