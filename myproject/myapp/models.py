@@ -1,11 +1,13 @@
 from django.db import models
 
 class Event(models.Model):
-    event_name = models.CharField(max_length=200)
-    venue = models.CharField(max_length=200)
-    vday = models.DateField()
-    vstart_time = models.TimeField()
-    vend_time = models.TimeField()
+    event_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    venue = models.CharField(max_length=100)
+    day = models.CharField(max_length=50)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    event_date = models.DateField()
 
     def __str__(self):
-        return self.event_name
+        return self.name

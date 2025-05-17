@@ -214,3 +214,6 @@ def delete_event(request, event_id):
                 conn.close()
         else:
             return JsonResponse({"success": False, "error": "Database connection failed."})
+        
+    
+
