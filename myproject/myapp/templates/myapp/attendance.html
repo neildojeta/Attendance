@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'myapp/student.css' %}" />
+    <link rel="stylesheet" href="{% static 'myapp/admin.css' %}" />
+</head>
+<body>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <h1>Student Attendance</h1>
+
+            <!-- Custom Calendar Section -->
+            <div class="calendar-section">
+                <label><strong>Today’s Date:</strong></label>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth" aria-label="Previous Month">&lt;</button>
+                        <div class="calendar-month-year" id="monthYear"></div>
+                        <button id="nextMonth" aria-label="Next Month">&gt;</button>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays"></div>
+                </div>
+
+                <input type="hidden" id="event-date" readonly />
+
+                <div class="button-group">
+                    <button class="attend-btn" onclick="markAttendance()">Attend</button>
+                    <button class="timeout-btn" onclick="markTimeout()">Time Out</button>
+                </div>
+
+                <div class="timestamp" id="timestamp">
+                    <div id="timeInSection"></div>
+                    <div id="timeOutSection"></div>
+                </div>
+
+                <div id="eventAnnouncement" class="event-announcement" style="display: block;">
+                    <h3>📣 Upcoming Event</h3>
+                    <p><strong>Event:</strong> <span id="eventName"></span></p>
+                    <p><strong>Venue:</strong> <span id="eventVenue"></span></p>
+                    <p><strong>Time:</strong> <span id="eventTime"></span></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+    <!-- Scripts -->
+
+        <script>
+        const events = {
+        "2025-05-20": {
+            name: "Student Assembly",
+            venue: "Auditorium",
+            time: "10:00 AM - 12:00 PM"
+        },
+        "2025-05-25": {
+            name: "Midterm Exam",
+            venue: "Room 204",
+            time: "8:00 AM - 10:00 AM"
+        }
+    };
+
+    function showEventForDate(date) {
+        const announcementBox = document.getElementById("eventAnnouncement");
+        const event = events[date];
+
+        if (event) {
+            document.getElementById("eventName").textContent = event.name;
+            document.getElementById("eventVenue").textContent = event.venue;
+            document.getElementById("eventTime").textContent = event.time;
+            announcementBox.style.display = "block";
+        } else {
+            announcementBox.style.display = "none";
+        }
+    }
+
+    </script>
+    
+    <script>
+        const monthYearElem = document.getElementById('monthYear');
+        const calendarDaysElem = document.getElementById('calendarDays');
+        const eventDateInput = document.getElementById('event-date');
+
+        const attendBtn = document.querySelector('.attend-btn');
+        const timeoutBtn = document.querySelector('.timeout-btn');
+
+        // Initialize current date variables
+        let today = new Date();
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+        let selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        function isSameDate(d1, d2) {
+            return (
+                d1.getFullYear() === d2.getFullYear() &&
+                d1.getMonth() === d2.getMonth() &&
+                d1.getDate() === d2.getDate()
+            );
+        }
+
+        function renderCalendar(month, year) {
+            calendarDaysElem.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const firstWeekday = firstDay.getDay(); // Sunday=0..Saturday=6
+            const daysInMonth = lastDay.getDate();
+
+            // Show month and year
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            monthYearElem.textContent = `${monthNames[month]} ${year}`;
+
+            // Fill blank days before the 1st day
+            for(let i = 0; i < firstWeekday; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.classList.add('calendar-day', 'disabled');
+                calendarDaysElem.appendChild(emptyDiv);
+            }
+
+            // Create day elements
+            for(let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('calendar-day');
+                dayDiv.textContent = day;
+
+                // Highlight today
+                if (isSameDate(date, today)) {
+                    dayDiv.classList.add('today');
+                }
+
+                // Highlight selected date
+                if (isSameDate(date, selectedDate)) {
+                    dayDiv.classList.add('selected');
+                }
+
+                // Enable only today and past dates (optional: allow future?)
+                // Here, let’s disable future dates beyond today (adjust if you want)
+                if (date > today) {
+                    dayDiv.classList.add('disabled');
+                    dayDiv.style.cursor = 'not-allowed';
+                } else {
+                    dayDiv.addEventListener('click', () => {
+                        selectedDate = date;
+                        updateSelectedDate();
+                        renderCalendar(currentMonth, currentYear);
+                        resetButtons();
+                        showEventForDate(eventDateInput.value); // <-- Add this here
+                    });
+                }
+
+                calendarDaysElem.appendChild(dayDiv);
+            }
+        }
+
+        function updateSelectedDate() {
+            eventDateInput.value = selectedDate.toISOString().split('T')[0];
+            showEventForDate(eventDateInput.value);
+        }
+
+        function resetButtons() {
+            // Enable Attend if within allowed hours & selected date is today or earlier
+            if (isWithinAllowedHours() && selectedDate <= today) {
+                attendBtn.disabled = false;
+                attendBtn.style.opacity = "1";
+                attendBtn.style.cursor = "pointer";
+
+                timeoutBtn.disabled = true;
+                timeoutBtn.style.opacity = "0.6";
+                timeoutBtn.style.cursor = "not-allowed";
+            } else {
+                attendBtn.disabled = true;
+                attendBtn.style.opacity = "0.6";
+                attendBtn.style.cursor = "not-allowed";
+
+                timeoutBtn.disabled = true;
+                timeoutBtn.style.opacity = "0.6";
+                timeoutBtn.style.cursor = "not-allowed";
+            }
+
+            // Clear timestamps display
+            document.getElementById("timeInSection").innerHTML = "";
+            document.getElementById("timeOutSection").innerHTML = "";
+        }
+
+        function isWithinAllowedHours() {
+            const now = new Date();
+            const hours = now.getHours();
+            return hours >= 1 && hours < 23;
+        }
+
+        function markAttendance() {
+            if (attendBtn.disabled) return;
+
+            if (!isWithinAllowedHours()) {
+                alert("Attendance is only allowed from 7:00 AM to 11:00 PM.");
+                return;
+            }
+
+            const selectedDateStr = eventDateInput.value;
+            const now = new Date();
+            const timeStamp = now.toLocaleString();
+
+            if (selectedDateStr) {
+                document.getElementById("timeInSection").innerHTML =
+                    `<strong>Attendance Recorded:</strong><br>Event Date: ${selectedDateStr}<br>Time In: ${timeStamp}`;
+                document.getElementById("timeOutSection").innerHTML = "";
+
+                attendBtn.disabled = true;
+                attendBtn.style.opacity = "0.6";
+                attendBtn.style.cursor = "not-allowed";
+
+                timeoutBtn.disabled = false;
+                timeoutBtn.style.opacity = "1";
+                timeoutBtn.style.cursor = "pointer";
+            }
+        }
+
+        function markTimeout() {
+            if (timeoutBtn.disabled) return;
+
+            const selectedDateStr = eventDateInput.value;
+            const now = new Date();
+            const timeStamp = now.toLocaleString();
+
+            if (selectedDateStr) {
+                document.getElementById("timeOutSection").innerHTML =
+                    `<strong>Time Out Recorded:</strong><br>Event Date: ${selectedDateStr}<br>Time Out: ${timeStamp}`;
+                document.getElementById("timeInSection").innerHTML = "";
+
+                timeoutBtn.disabled = true;
+                timeoutBtn.style.opacity = "0.6";
+                timeoutBtn.style.cursor = "not-allowed";
+            }
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar(currentMonth, currentYear);
+        });
+
+        // Initialize calendar and selected date input on load
+        window.onload = () => {
+            updateSelectedDate();
+            renderCalendar(currentMonth, currentYear);
+            resetButtons();
+        };
+    </script>
+
+</html>

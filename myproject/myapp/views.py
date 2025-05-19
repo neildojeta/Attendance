@@ -133,34 +133,44 @@ def student_dashboard(request):
     tab = request.GET.get('tab', '')
     return render(request, "myapp/student_dashboard.html", {"tab": tab})
 
+# ========== FACULTY DASHBOARD ==========
+
+def faculty_dashboard(request):
+    if "username" not in request.session:
+        return redirect("admin_login")
+    tab = request.GET.get('tab', '')
+    return render(request, "myapp/faculty_dashboard.html", {"tab": tab})
+
 
 # ========== EVENT VIEWS ==========
 
 @csrf_exempt
 def add_event(request):
+    print("✅ add_event() called")
+
     if request.method == "POST":
         event_id = request.POST.get("event_id")
         event_name = request.POST.get("event_name")
         venue = request.POST.get("venue")
-        days = request.POST.get("days")
-        start_time = request.POST.get("start_time")
-        end_time = request.POST.get("end_time")
-        event_date = request.POST.get("event_date")
+        vdays = request.POST.get("vday_s")  # Use safe key name (HTML can't use "vday(s)")
+        vstart_time = request.POST.get("vstart_time")
+        vend_time = request.POST.get("vend_time")
 
         conn = create_connection()
         if conn:
             try:
                 cursor = conn.cursor()
                 sql = """
-                    INSERT INTO events (event_id, event_name, venue, days, start_time, end_time, event_date)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO events (event_id, event_name, venue, `vday(s)`, vstart_time, vend_time)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                 """
-                cursor.execute(sql, (event_id, event_name, venue, days, start_time, end_time, event_date))
+                cursor.execute(sql, (event_id, event_name, venue, vdays, vstart_time, vend_time))
                 conn.commit()
                 return JsonResponse({"success": True})
             except mysql.connector.Error as err:
                 return JsonResponse({"success": False, "error": str(err)})
             finally:
+                cursor.close()
                 conn.close()
         else:
             return JsonResponse({"success": False, "error": "Database connection failed."})
@@ -172,10 +182,9 @@ def update_event(request):
         event_id = request.POST.get("event_id")
         event_name = request.POST.get("event_name")
         venue = request.POST.get("venue")
-        days = request.POST.get("days")
-        start_time = request.POST.get("start_time")
-        end_time = request.POST.get("end_time")
-        event_date = request.POST.get("event_date")
+        vdays = request.POST.get("vday_s")
+        vstart_time = request.POST.get("vstart_time")
+        vend_time = request.POST.get("vend_time")
 
         conn = create_connection()
         if conn:
@@ -183,18 +192,20 @@ def update_event(request):
                 cursor = conn.cursor()
                 sql = """
                     UPDATE events
-                    SET event_name=%s, venue=%s, days=%s, start_time=%s, end_time=%s, event_date=%s
+                    SET event_name=%s, venue=%s, `vday(s)`=%s, vstart_time=%s, vend_time=%s
                     WHERE event_id=%s
                 """
-                cursor.execute(sql, (event_name, venue, days, start_time, end_time, event_date, event_id))
+                cursor.execute(sql, (event_name, venue, vdays, vstart_time, vend_time, event_id))
                 conn.commit()
                 return JsonResponse({"success": True})
             except mysql.connector.Error as err:
                 return JsonResponse({"success": False, "error": str(err)})
             finally:
+                cursor.close()
                 conn.close()
         else:
             return JsonResponse({"success": False, "error": "Database connection failed."})
+
 
 
 @csrf_exempt
@@ -215,5 +226,20 @@ def delete_event(request, event_id):
         else:
             return JsonResponse({"success": False, "error": "Database connection failed."})
         
+from django.http import JsonResponse
+from db_config import create_connection
+  
+# Adjust if your DB connection function is named differently
+
+def test_event_connection(request):
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM events")  # Replace 'events' with your actual table name
+        data = cursor.fetchall()
+        return JsonResponse({"connected": True, "event_count": len(data)})
+    except Exception as e:
+        return JsonResponse({"connected": False, "error": str(e)})
+
     
 

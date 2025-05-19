@@ -27,7 +27,10 @@ def get_events(request):
 
 @csrf_exempt
 def add_event(request):
+    print("📥 add_event() triggered")
+
     if request.method == "POST":
+        print("Received POST data:", request.POST)
         data = json.loads(request.body)
         conn = create_connection()
         if conn:
@@ -97,3 +100,8 @@ def delete_event(request):
             finally:
                 conn.close()
     return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+def test_route(request):
+    print("🧪 test_route called!")
+    return JsonResponse({"status": "ok"})
+

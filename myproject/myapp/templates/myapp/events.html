@@ -3,6 +3,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
   <title>Event Dashboard</title>
 
   <!-- Fonts & Icons -->
@@ -33,10 +35,6 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
 
-    h1 {
-      margin-bottom: 20px;
-    }
-
     /* === Buttons === */
     .btn {
       background-color: #b30000;
@@ -51,15 +49,6 @@
 
     .btn:hover {
       background-color: #990000;
-    }
-
-    /* === Event Display === */
-    .event-display {
-      margin-top: 20px;
-      background: #fff7e6;
-      border: 1px solid #ffcc80;
-      padding: 15px;
-      border-radius: 10px;
     }
 
     /* === Calendar Styles === */
@@ -214,8 +203,7 @@
     table.styled-table thead {
       position: sticky;
       top: 0;
-      background-color: crimson;
-      color: white;
+      background-color: #ddd;
     }
 
     table.styled-table th, table.styled-table td {
@@ -242,10 +230,6 @@
     <div class="dashboard-container">
       <h1>Event Dashboard</h1>
       <button class="btn" onclick="showPopup()">Add Event</button>
-
-      <div class="event-display" id="eventDisplay">
-        <strong>No event added yet.</strong>
-      </div>
 
       <!-- Calendar -->
       <div class="calendar-section">
@@ -301,9 +285,6 @@
             </td>
           </tr>
           {% empty %}
-          <tr>
-            <td colspan="8">No event records found.</td>
-          </tr>
           {% endfor %}
         </tbody>
 
@@ -313,334 +294,402 @@
 
   <!-- Popup Modal -->
   <div class="popup" id="popup">
-    <div class="popup-content">
-      <h3>Add New Event</h3>
-      <input type="text" id="event-id" placeholder="Event ID" />
-      <input type="text" id="event-name" placeholder="Event Name" />
-      <input type="text" id="event-venue" placeholder="Venue" />
-      <input type="text" id="event-days" placeholder="Event Day(s)" />
-      <input type="time" id="event-start" />
-      <input type="time" id="event-end" />
-      <input type="date" id="event-date" />
+  <div class="popup-content">
+    <h3>Add New Event</h3>
+    <form id="addEventForm" method="POST" action="{% url 'add_event' %}">
+      {% csrf_token %}
+      <input type="text" id="event_id" name="event_id" placeholder="Event ID" />
+      <input type="text" id="event_name" name="event_name" placeholder="Event Name" />
+      <input type="text" id="venue" name="venue" placeholder="Venue" />
+      <input type="text" id="vday_s" name="vday_s" placeholder="Event Day(s)" />
+      <input type="time" id="vstart_time" name="vstart_time" />
+      <input type="time" id="vend_time" name="vend_time" />
+      <input type="date" id="event-date" name="event_date" />
       <div class="btn-row">
-        <button class="btn" onclick="addEvent()">Create</button>
-        <button class="btn" onclick="hidePopup()" style="background-color: gray;">Cancel</button>
+        <button type="submit" class="btn">Create</button>
+        <button type="button" class="btn" onclick="hidePopup()" style="background-color: gray;">Cancel</button>
       </div>
-    </div>
+    </form>
+  </div>
   </div>
 
-  <!-- Scripts -->
-  <script>
-    const popup = document.getElementById('popup');
-    const calendarDays = document.getElementById("calendar-days");
-    const monthYear = document.getElementById("month-year");
-    const prevBtn = document.getElementById("prev");
-    const nextBtn = document.getElementById("next");
-    let highlightedDates = [];
-    let currentDate = new Date();
 
-    function showPopup() {
-      popup.style.display = 'flex';
-    }
+<script>
+  function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+  }
 
-    function hidePopup() {
-      popup.style.display = 'none';
-    }
+  // Handle form submission via POST fetch
+  document.getElementById('addEventForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    function confirmEventDelete(id) {
-      alert('Delete event with ID: ' + id);
-    }
+    const form = e.target;
+    const formData = new FormData(form);
 
-    function addEvent() {
-      const eventId = document.getElementById('event-id').value;
-      const eventName = document.getElementById('event-name').value;
-      const eventVenue = document.getElementById('event-venue').value;
-      const eventDays = document.getElementById('event-days').value;
-      const eventStart = document.getElementById('event-start').value;
-      const eventEnd = document.getElementById('event-end').value;
-      const eventDate = document.getElementById('event-date').value;
-
-      if (!eventId || !eventName || !eventVenue || !eventDays || !eventStart || !eventEnd || !eventDate) {
+    // Validate all fields
+    for (const [key, value] of formData.entries()) {
+      if (!value) {
         alert('Please fill in all fields.');
         return;
       }
-
-      const tbody = document.getElementById('eventTableBody');
-      const row = document.createElement('tr');
-
-      row.innerHTML = `
-        <td>${eventId}</td>
-        <td>${eventName}</td>
-        <td>${eventVenue}</td>
-        <td>${eventDays}</td>
-        <td>${eventStart}</td>
-        <td>${eventEnd}</td>
-        <td>${eventDate}</td>
-        <td class="action-icons">
-          <i class="fas fa-edit" title="Edit"></i>
-          <i class="fas fa-trash-alt" title="Delete" onclick="confirmEventDelete('${eventId}')"></i>
-        </td>
-      `;
-
-      tbody.appendChild(row);
-      highlightedDates.push(eventDate);
-      renderCalendar(currentDate);
-      hidePopup();
     }
 
-    function renderCalendar(date) {
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const today = new Date();
-      const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCSRFToken(),
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Append the new event row
+        const tbody = document.getElementById('eventTableBody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${formData.get('event_id')}</td>
+          <td>${formData.get('event_name')}</td>
+          <td>${formData.get('venue')}</td>
+          <td>${formData.get('vday_s')}</td>
+          <td>${formData.get('vstart_time')}</td>
+          <td>${formData.get('vend_time')}</td>
+          <td>${formData.get('event_date')}</td>
+          <td class="action-icons">
+            <i class="fas fa-edit" title="Edit"></i>
+            <i class="fas fa-trash-alt" title="Delete" onclick="confirmEventDelete('${formData.get('event_id')}')"></i>
+          </td>
+        `;
+        tbody.appendChild(newRow);
 
-      const firstDay = new Date(year, month, 1).getDay();
-      const lastDate = new Date(year, month + 1, 0).getDate();
-
-      monthYear.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
-      calendarDays.innerHTML = "";
-
-      for (let i = 0; i < firstDay; i++) {
-        calendarDays.innerHTML += `<div></div>`;
-      }
-
-      for (let d = 1; d <= lastDate; d++) {
-        const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
-        let classes = [];
-
-        if (highlightedDates.includes(dateStr)) classes.push("highlighted");
-        if (dateStr === todayStr) classes.push("today");
-
-        calendarDays.innerHTML += `<div class="${classes.join(' ')}">${d}</div>`;
-      }
-    }
-
-    prevBtn.addEventListener("click", () => {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCalendar(currentDate);
-    });
-
-    nextBtn.addEventListener("click", () => {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCalendar(currentDate);
-    });
-
-    renderCalendar(currentDate);
-  </script>
-  <script>
-    // Open the "Add Event" popup when the Add button is clicked
-    document.querySelector('.search-bar button').addEventListener('click', () => {
-        document.getElementById('addEventModal').style.display = 'flex';
-    });
-
-    function closeAddEventModal() {
-        document.getElementById('addEventModal').style.display = 'none';
-    }
-
-    // Submit new event
-    document.getElementById('addEventForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        fetch("{% url 'add_event' %}", {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Failed to add event: ' + data.error);
-            }
-        });
-    });
-</script>
-
-<script>
-    function openEditEventModal(eventId, name, venue, day, startTime, endTime, date) {
-        document.getElementById("edit_event_original_id").value = eventId;
-        document.getElementById("edit_event_id").value = eventId;
-        document.getElementById("edit_event_name").value = name;
-        document.getElementById("edit_event_venue").value = venue;
-        document.getElementById("edit_event_day").value = day;
-        document.getElementById("edit_event_start").value = startTime;
-        document.getElementById("edit_event_end").value = endTime;
-        document.getElementById("edit_event_date").value = date;
-
-        document.getElementById("editEventModal").style.display = "flex";
-    }
-
-    function closeEditEventModal() {
-        document.getElementById("editEventModal").style.display = "none";
-    }
-
-    // Attach edit event listeners
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.fa-edit').forEach(function (editIcon) {
-            editIcon.addEventListener('click', function () {
-                const row = editIcon.closest('tr');
-                const eventId = row.children[0].textContent.trim();
-                const name = row.children[1].textContent.trim();
-                const venue = row.children[2].textContent.trim();
-                const day = row.children[3].textContent.trim();
-                const startTime = row.children[4].textContent.trim();
-                const endTime = row.children[5].textContent.trim();
-                const date = row.children[6].textContent.trim();
-
-                openEditEventModal(eventId, name, venue, day, startTime, endTime, date);
-            });
-        });
-    });
-</script>
-
-<script>
-    // Submit edited event
-    document.getElementById("editEventForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-
-        fetch("{% url 'update_event' %}", {
-            method: "POST",
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Event updated successfully!");
-                location.reload();
-            } else {
-                alert("Update failed: " + data.error);
-            }
-        })
-        .catch(error => {
-            alert("Error: " + error);
-        });
-    });
-</script>
-
-<script>
-    function confirmEventDelete(eventId) {
-        if (confirm("Are you sure you want to delete this event?")) {
-            fetch(`/delete_event/${eventId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert("Delete failed: " + data.error);
-                }
-            });
+        // Highlight event date on calendar and re-render
+        if (!highlightedDates.includes(formData.get('event_date'))) {
+          highlightedDates.push(formData.get('event_date'));
+          renderCalendar(currentDate);
         }
-    }
+
+        form.reset();
+        hidePopup();
+      } else {
+        alert(data.message || 'Something went wrong.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to add event.');
+    });
+  });
+
 </script>
+
 <script>
-  function deleteEvent(eventId) {
-  fetch('/delete_event/', {
+  document.getElementById('search-event').addEventListener('keyup', function() {
+  const query = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#eventTableBody tr');
+
+  rows.forEach(row => {
+    const match = [...row.children].some(td =>
+      td.textContent.toLowerCase().includes(query)
+    );
+    row.style.display = match ? '' : 'none';
+    });
+  });
+
+</script>
+
+<script>
+  // Scripts
+const popup = document.getElementById('popup');
+const calendarDays = document.getElementById("calendar-days");
+const monthYear = document.getElementById("month-year");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+
+let highlightedDates = [];
+let currentDate = new Date();
+
+// Show/hide Add Event popup
+function showPopup() {
+  popup.style.display = 'flex';
+}
+function hidePopup() {
+  popup.style.display = 'none';
+}
+
+// Render calendar with highlights and today mark
+function renderCalendar(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  monthYear.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+  calendarDays.innerHTML = "";
+
+  for (let i = 0; i < firstDay; i++) {
+    calendarDays.innerHTML += `<div></div>`;
+  }
+
+  for (let d = 1; d <= lastDate; d++) {
+    const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
+    let classes = [];
+
+    if (highlightedDates.includes(dateStr)) classes.push("highlighted");
+    if (dateStr === todayStr) classes.push("today");
+
+    calendarDays.innerHTML += `<div class="${classes.join(' ')}">${d}</div>`;
+  }
+}
+
+// Prev/Next buttons change month
+prevBtn.addEventListener("click", () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar(currentDate);
+});
+nextBtn.addEventListener("click", () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar(currentDate);
+});
+
+renderCalendar(currentDate);
+
+// Add Event - validate input, add row, highlight date, re-render calendar
+function addEvent() {
+  const eventId = document.getElementById('event_id').value;
+  const eventName = document.getElementById('event_name').value;
+  const eventVenue = document.getElementById('venue').value;
+  const eventDays = document.getElementById('vday_s').value;
+  const eventStart = document.getElementById('vstart_time').value;
+  const eventEnd = document.getElementById('vend_time').value;
+  const eventDate = document.getElementById('event-date').value;
+
+  if (!eventId || !eventName || !eventVenue || !eventDays || !eventStart || !eventEnd || !eventDate) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  const tbody = document.getElementById('eventTableBody');
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+    <td>${eventId}</td>
+    <td>${eventName}</td>
+    <td>${eventVenue}</td>
+    <td>${eventDays}</td>
+    <td>${eventStart}</td>
+    <td>${eventEnd}</td>
+    <td>${eventDate}</td>
+    <td class="action-icons">
+      <i class="fas fa-edit" title="Edit"></i>
+      <i class="fas fa-trash-alt" title="Delete" onclick="confirmEventDelete('${eventId}')"></i>
+    </td>
+  `;
+
+    tbody.appendChild(row);
+
+  if (!highlightedDates.includes(eventDate)) {
+  highlightedDates.push(eventDate);
+  renderCalendar(currentDate);
+  }
+
+  hidePopup();
+  document.getElementById('addEventForm').reset();
+
+  highlightedDates.push(eventDate);
+  renderCalendar(currentDate);
+  hidePopup();
+  attachEditListeners(); // bind edit events to new row
+}
+
+// Edit Event Modal open/close and populate fields
+function openEditEventModal(eventId, name, venue, day, startTime, endTime, date) {
+  document.getElementById("edit_event_original_id").value = eventId;
+  document.getElementById("edit_event_id").value = eventId;
+  document.getElementById("edit_event_name").value = name;
+  document.getElementById("edit_event_venue").value = venue;
+  document.getElementById("edit_event_day").value = day;
+  document.getElementById("edit_event_start").value = startTime;
+  document.getElementById("edit_event_end").value = endTime;
+  document.getElementById("edit_event_date").value = date;
+
+  document.getElementById("editEventModal").style.display = "flex";
+}
+function closeEditEventModal() {
+  document.getElementById("editEventModal").style.display = "none";
+}
+
+// Confirm Delete Event with fetch and reload
+function confirmEventDelete(eventId) {
+  if (confirm("Are you sure you want to delete this event?")) {
+    fetch(`/delete_event/${eventId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Event deleted!');
+        location.reload();
+      } else {
+        alert('Delete failed: ' + data.error);
+      }
+    });
+  }
+}
+
+// Attach edit icon listeners to open edit modal
+function attachEditListeners() {
+  document.querySelectorAll('.fa-edit').forEach(editIcon => {
+    editIcon.addEventListener('click', () => {
+      const row = editIcon.closest('tr');
+      const eventId = row.children[0].textContent.trim();
+      const name = row.children[1].textContent.trim();
+      const venue = row.children[2].textContent.trim();
+      const day = row.children[3].textContent.trim();
+      const startTime = row.children[4].textContent.trim();
+      const endTime = row.children[5].textContent.trim();
+      const date = row.children[6].textContent.trim();
+
+      openEditEventModal(eventId, name, venue, day, startTime, endTime, date);
+    });
+  });
+}
+attachEditListeners(); // Initial binding on page load
+
+// Listen for the Edit Event form submission
+document.getElementById('editEventForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Prevent default form submission (page reload)
+
+  // Get original event ID (to find the row to update)
+  const originalId = document.getElementById('edit_event_original_id').value;
+
+  // Get updated values from the form inputs
+  const eventId = document.getElementById('edit_event_id').value.trim();
+  const eventName = document.getElementById('edit_event_name').value.trim();
+  const eventVenue = document.getElementById('edit_event_venue').value.trim();
+  const eventDays = document.getElementById('edit_event_day').value.trim();
+  const eventStart = document.getElementById('edit_event_start').value.trim();
+  const eventEnd = document.getElementById('edit_event_end').value.trim();
+  const eventDate = document.getElementById('edit_event_date').value.trim();
+
+  // Find the table row with the original event ID
+  const rows = document.querySelectorAll('#eventTableBody tr');
+  for (const row of rows) {
+    if (row.children[0].textContent.trim() === originalId) {
+      // Update the row cells with the new values from the form
+      row.children[0].textContent = eventId;
+      row.children[1].textContent = eventName;
+      row.children[2].textContent = eventVenue;
+      row.children[3].textContent = eventDays;
+      row.children[4].textContent = eventStart;
+      row.children[5].textContent = eventEnd;
+      row.children[6].textContent = eventDate;
+      break; // Stop loop once found and updated
+    }
+  }
+
+  // Close the Edit Event modal popup
+  closeEditEventModal();
+});
+
+</script>
+
+<script>
+// Search filter for event table rows
+document.getElementById('search-event').addEventListener('input', function() {
+  const query = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#eventTableBody tr');
+
+  rows.forEach(row => {
+    const rowText = row.textContent.toLowerCase();
+    row.style.display = rowText.includes(query) ? '' : 'none';
+  });
+});
+</script>
+
+<script>
+// // Add Event modal open/close from Add button
+document.querySelector('.search-bar button').addEventListener('click', () => {
+  showPopup();
+});
+
+// document.querySelector('.search-bar button').addEventListener('click', () => {
+//   document.getElementById('addEventModal').style.display = 'flex';
+// });
+// function closeAddEventModal() {
+//   document.getElementById('addEventModal').style.display = 'none';
+// }
+
+// Submit Add Event Form (using fetch and CSRF token)
+document.getElementById('addEventForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  fetch("{% url 'add_event' %}", {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken'), // If CSRF protection enabled
-    },
-    body: JSON.stringify({ id: eventId })
+    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      location.reload();
+    } else {
+      alert('Failed to add event: ' + data.error);
+    }
+  });
+});
+
+// Submit Edit Event Form (using fetch and CSRF token)
+document.getElementById("editEventForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  fetch("{% url 'update_event' %}", {
+    method: "POST",
+    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    body: formData,
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert('Event deleted!');
-      // Refresh calendar or event list here
+      alert("Event updated successfully!");
+      location.reload();
     } else {
-      alert('Delete failed: ' + data.error);
+      alert("Update failed: " + data.error);
     }
+  })
+  .catch(error => {
+    alert("Error: " + error);
   });
-}
+});
 </script>
 
-<script>
-  // Popup open/close for Add Event
-  function showPopup() {
-    document.getElementById('popup').style.display = 'flex';
-  }
-  function hidePopup() {
-    document.getElementById('popup').style.display = 'none';
-  }
-
-  // Add Event functionality - already in your code, no change needed
-
-  // Edit Event modal open/close - already present and hooked up
-
-  // Confirm Delete Event
-  function confirmEventDelete(eventId) {
-    if (confirm("Are you sure you want to delete this event?")) {
-      fetch(`/delete_event/${eventId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Event deleted!');
-          location.reload();
-        } else {
-          alert('Delete failed: ' + data.error);
-        }
-      });
-    }
-  }
-
-  // SEARCH FUNCTIONALITY - filters rows in event table in real-time
-  document.getElementById('search-event').addEventListener('input', function() {
-    const query = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#eventTableBody tr');
-
-    rows.forEach(row => {
-      const rowText = row.textContent.toLowerCase();
-      if (rowText.includes(query)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-  });
-
-  // Attach edit event listeners to dynamically handle rows added after page load
-  function attachEditListeners() {
-    document.querySelectorAll('.fa-edit').forEach(editIcon => {
-      editIcon.addEventListener('click', function () {
-        const row = editIcon.closest('tr');
-        const eventId = row.children[0].textContent.trim();
-        const name = row.children[1].textContent.trim();
-        const venue = row.children[2].textContent.trim();
-        const day = row.children[3].textContent.trim();
-        const startTime = row.children[4].textContent.trim();
-        const endTime = row.children[5].textContent.trim();
-        const date = row.children[6].textContent.trim();
-
-        openEditEventModal(eventId, name, venue, day, startTime, endTime, date);
-      });
-    });
-  }
-
-  // Initial call
-  attachEditListeners();
-
-  // When you add new event rows dynamically, call attachEditListeners() again to bind edit clicks
-
-</script>
-
+<!-- Edit Event Modal -->
+<div class="popup" id="editEventModal" style="display:none;">
+  <div class="popup-content">
+    <h3>Edit Event</h3>
+    <form id="editEventForm">
+      {% csrf_token %}
+      <input type="hidden" id="edit_event_original_id" name="original_event_id" />
+      <input type="text" id="edit_event_id" name="event_id" placeholder="Event ID" />
+      <input type="text" id="edit_event_name" name="event_name" placeholder="Event Name" />
+      <input type="text" id="edit_event_venue" name="event_venue" placeholder="Venue" />
+      <input type="text" id="edit_event_day" name="event_days" placeholder="Event Day(s)" />
+      <input type="time" id="edit_event_start" name="event_start" />
+      <input type="time" id="edit_event_end" name="event_end" />
+      <input type="date" id="edit_event_date" name="event_date" />
+      <div class="btn-row">
+        <button type="submit" class="btn">Save Changes</button>
+        <button type="button" class="btn" onclick="closeEditEventModal()" style="background-color: gray;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 </body>
 </html>

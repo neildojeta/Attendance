@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'myapp/student.css' %}" />
+    <link rel="stylesheet" href="{% static 'myapp/admin.css' %}" />
+</head>
+<body>
+
+    <h1>Student Profile</h1>
+
+    <div class="dashboard-split">
+    <!-- Left: Student Info -->
+    <div class="info-form">
+        <label><strong>Student ID:</strong></label>
+        <input type="text" id="studentIdInput" value="202312345" readonly />
+
+        <label><strong>Student Name:</strong></label>
+        <input type="text" id="studentNameInput" value="Bentong Kabayo" readonly />
+
+        <label><strong>Year Level:</strong></label>
+        <input type="text" id="yearLevelInput" value="2nd Year" readonly />
+
+        <label><strong>Course:</strong></label>
+        <input type="text" id="courseInput" value="BS Information Technology" readonly />
+    </div>
+
+    <!-- Right: Subject Selector -->
+    <div class="subject-container">
+    <div class="subject-header">
+        <h3>Subjects</h3>
+        <button id="editBtn" onclick="enableSubjectEdit()">Edit</button>
+        <button id="saveBtn" onclick="saveSubjectChanges()" disabled>Save Changes</button>
+    </div>
+
+    <!-- Custom Dropdown -->
+    <div class="custom-dropdown" id="subjectDropdown">
+        <button id="dropdownBtn" onclick="toggleDropdown()" disabled>+ Select Subject</button>
+        <ul id="dropdownList" class="dropdown-list" style="display: none;"></ul>
+    </div>
+
+    <!-- Display Selected -->
+    <div class="subject-display">
+        <strong>Selected Subjects:</strong>
+        <div id="subjectChips"></div>
+    </div>
+    </div>
+</body>
+
+<script>
+    document.getElementById("subjectsSelect").addEventListener("change", function () {
+        const selectedSubjects = Array.from(this.selectedOptions).map(opt => opt.value);
+        const subjectList = document.getElementById("subjectList");
+        subjectList.innerHTML = "";
+
+        selectedSubjects.forEach(subject => {
+            const li = document.createElement("li");
+            li.textContent = subject;
+            subjectList.appendChild(li);
+        });
+    });
+</script>
+
+<script>
+    const allSubjects = [
+    "Web Technology",
+    "System Analysis and Design",
+    "Operating Systems",
+    "Application Development",
+    "Object Oriented Programming",
+    "PathFit4",
+    "Theology104",
+    "Gender Society",
+    "Art Appreciation"
+];
+
+let selectedSubjects = [];
+
+function enableSubjectEdit() {
+    document.getElementById("editBtn").disabled = true;
+    document.getElementById("saveBtn").disabled = false;
+
+    // Enable interaction with dropdown
+    document.getElementById("dropdownBtn").disabled = false;
+
+    renderDropdown();
+}
+
+function toggleDropdown() {
+    const list = document.getElementById("dropdownList");
+    list.style.display = list.style.display === "block" ? "none" : "block";
+}
+
+function renderDropdown() {
+    const list = document.getElementById("dropdownList");
+    list.innerHTML = "";
+    const filteredSubjects = allSubjects.filter(sub => !selectedSubjects.includes(sub));
+    filteredSubjects.forEach(subject => {
+        const li = document.createElement("li");
+        li.textContent = subject;
+        li.onclick = () => addSubject(subject);
+        list.appendChild(li);
+    });
+}
+
+function addSubject(subject) {
+    if (!selectedSubjects.includes(subject)) {
+        selectedSubjects.push(subject);
+        updateChips();
+        renderDropdown();
+    }
+}
+
+function removeSubject(subject) {
+    selectedSubjects = selectedSubjects.filter(s => s !== subject);
+    updateChips();
+    renderDropdown();
+}
+
+function updateChips() {
+    const container = document.getElementById("subjectChips");
+    container.innerHTML = "";
+    selectedSubjects.forEach(subject => {
+        const chip = document.createElement("span");
+        chip.innerHTML = `${subject} <span class="remove-chip" onclick="removeSubject('${subject}')">&times;</span>`;
+        container.appendChild(chip);
+    });
+}
+
+function saveSubjectChanges() {
+    document.getElementById("editBtn").disabled = false;
+    document.getElementById("saveBtn").disabled = true;
+
+    document.getElementById("dropdownBtn").disabled = true;  // disable again
+    document.getElementById("dropdownList").style.display = "none";
+
+    // Optional: store subjects to backend here
+}
+
+</script>

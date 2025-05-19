@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <title>Student Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'myapp/student.css' %}" />
+    <link rel="stylesheet" href="{% static 'myapp/faculty.css' %}" />
     <link rel="stylesheet" href="{% static 'myapp/admin.css' %}" />
 </head>
 <body>
@@ -16,12 +16,12 @@
         </div>
 
         <div class="redcontainer">
-            <h1>Welcome, Student</h1>
+            <h1>Welcome, TeacheR?</h1>
 
             <!-- Navigation -->
             <nav class="nav">
-                <a href="?tab=attendance" class="nav-link">Attendance</a>
                 <a href="?tab=profile" class="nav-link">Profile</a>
+                <a href="?tab=subjects" class="nav-link">Subjects</a>
             </nav>
 
             <!-- Logout Button -->
@@ -36,14 +36,13 @@
 
     <!-- Main Content Area -->
     <div class="main-content" style="padding: 40px;">
-        {% if tab == 'attendance' %}
-            {% include 'myapp/attendance.html' %}
-        {% elif tab == 'profile' %}
-            {% include 'myapp/profile_s.html' %}
+        {% if tab == 'profile' %}
+            {% include 'myapp/profile_f.html' %}
+        {% elif tab == 'subjects' %}
+            {% include 'myapp/subjects.html' %}
         {% else %}
-            <h3>Welcome to the Student Dashboard!</h3>
+            <h3>Welcome to the Faculty Dashboard!</h3>
             <p>Select a section from the sidebar to get started.</p>
         {% endif %}
     </div>
 </body>
-</html>

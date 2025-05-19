@@ -3,7 +3,7 @@ from mysql.connector import Error
 from config import ConfigManager
 
 def create_connection():
-    # Retrieve batch size from ConfigManager
+    # Retrieve batch size from ConfigManagergi
     config_manager = ConfigManager()
     try:
         connection = mysql.connector.connect(

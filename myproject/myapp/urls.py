@@ -16,6 +16,7 @@ from . import student_views
 from . import user_views
 from . import faculty_views
 from . import event_views
+# from . import student_dashboard
 
 urlpatterns = [
     path('', views.admin_login, name='admin_login'),
@@ -36,12 +37,19 @@ urlpatterns = [
     path('update_faculty/', faculty_views.update_faculty, name='update_faculty'),
     path('delete_faculty/<str:faculty_id>/', faculty_views.delete_faculty, name='delete_faculty'),
 
+    # Event-related views
     path('add_event/', event_views.add_event, name='add_event'),
     path('update_event/', event_views.update_event, name='update_event'),
     path('delete_event/<str:event_id>/', event_views.delete_event, name='delete_event'),
     path('list_events/', event_views.get_events, name='list_events'),
 
+    path("test_route/", event_views.test_route),
+
     # Student-Dashboard
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
+    path('logout/', views.logout_view, name='logout'),
+
+    # Faculty-Dashboard
+    path('faculty_dashboard/', views.faculty_dashboard, name='faculty_dashboard'),
     path('logout/', views.logout_view, name='logout'),
 ]
