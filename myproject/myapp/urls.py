@@ -41,9 +41,10 @@ urlpatterns = [
     path('add_event/', event_views.add_event, name='add_event'),
     path('update_event/', event_views.update_event, name='update_event'),
     path('delete_event/<str:event_id>/', event_views.delete_event, name='delete_event'),
-    path('list_events/', event_views.get_events, name='list_events'),
+    path('events/fetch/', event_views.fetch_events, name='fetch_events'),
+    # path('list_events/', event_views.get_events, name='list_events'),
 
-    path("test_route/", event_views.test_route),
+    # path("test_route/", event_views.test_route),
 
     # Student-Dashboard
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),

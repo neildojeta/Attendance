@@ -262,15 +262,14 @@
             <th>Event ID</th>
             <th>Event Name</th>
             <th>Venue</th>
-            <th>Event Day(s)</th>
+            <th>Event Date</th>
             <th>Time Start</th>
             <th>Time End</th>
-            <th>Date</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody id="eventTableBody">
-          {% for event in events %}
+          {% for event in event_data %}
           <tr>
             <td>{{ event.0 }}</td>
             <td>{{ event.1 }}</td>
@@ -278,7 +277,6 @@
             <td>{{ event.3 }}</td>
             <td>{{ event.4 }}</td>
             <td>{{ event.5 }}</td>
-            <td>{{ event.6 }}</td>
             <td class="action-icons">
               <i class="fas fa-edit" title="Edit"></i>
               <i class="fas fa-trash-alt" title="Delete" onclick="confirmEventDelete('{{ event.0 }}')"></i>
@@ -298,13 +296,12 @@
     <h3>Add New Event</h3>
     <form id="addEventForm" method="POST" action="{% url 'add_event' %}">
       {% csrf_token %}
-      <input type="text" id="event_id" name="event_id" placeholder="Event ID" />
+      <!-- <input type="text" id="event_id" name="event_id" placeholder="Event ID" /> -->
       <input type="text" id="event_name" name="event_name" placeholder="Event Name" />
       <input type="text" id="venue" name="venue" placeholder="Venue" />
-      <input type="text" id="vday_s" name="vday_s" placeholder="Event Day(s)" />
+      <input type="date" id="vday" name="vday" placeholder="Event Date" />
       <input type="time" id="vstart_time" name="vstart_time" />
       <input type="time" id="vend_time" name="vend_time" />
-      <input type="date" id="event-date" name="event_date" />
       <div class="btn-row">
         <button type="submit" class="btn">Create</button>
         <button type="button" class="btn" onclick="hidePopup()" style="background-color: gray;">Cancel</button>
@@ -351,10 +348,9 @@
           <td>${formData.get('event_id')}</td>
           <td>${formData.get('event_name')}</td>
           <td>${formData.get('venue')}</td>
-          <td>${formData.get('vday_s')}</td>
+          <td>${formData.get('vday')}</td>
           <td>${formData.get('vstart_time')}</td>
           <td>${formData.get('vend_time')}</td>
-          <td>${formData.get('event_date')}</td>
           <td class="action-icons">
             <i class="fas fa-edit" title="Edit"></i>
             <i class="fas fa-trash-alt" title="Delete" onclick="confirmEventDelete('${formData.get('event_id')}')"></i>
@@ -363,8 +359,8 @@
         tbody.appendChild(newRow);
 
         // Highlight event date on calendar and re-render
-        if (!highlightedDates.includes(formData.get('event_date'))) {
-          highlightedDates.push(formData.get('event_date'));
+        if (!highlightedDates.includes(formData.get('vday'))) {
+          highlightedDates.push(formData.get('vday'));
           renderCalendar(currentDate);
         }
 
@@ -407,6 +403,7 @@ const nextBtn = document.getElementById("next");
 
 let highlightedDates = [];
 let currentDate = new Date();
+
 
 // Show/hide Add Event popup
 function showPopup() {
@@ -458,15 +455,14 @@ renderCalendar(currentDate);
 
 // Add Event - validate input, add row, highlight date, re-render calendar
 function addEvent() {
-  const eventId = document.getElementById('event_id').value;
+  // const eventId = document.getElementById('event_id').value;
   const eventName = document.getElementById('event_name').value;
   const eventVenue = document.getElementById('venue').value;
-  const eventDays = document.getElementById('vday_s').value;
+  const eventDate = document.getElementById('vday').value;
   const eventStart = document.getElementById('vstart_time').value;
   const eventEnd = document.getElementById('vend_time').value;
-  const eventDate = document.getElementById('event-date').value;
 
-  if (!eventId || !eventName || !eventVenue || !eventDays || !eventStart || !eventEnd || !eventDate) {
+  if (!eventName || !eventVenue || !eventDate || !eventStart || !eventEnd) {
     alert('Please fill in all fields.');
     return;
   }
@@ -475,13 +471,11 @@ function addEvent() {
   const row = document.createElement('tr');
 
   row.innerHTML = `
-    <td>${eventId}</td>
     <td>${eventName}</td>
     <td>${eventVenue}</td>
-    <td>${eventDays}</td>
+    <td>${eventDate}</td>
     <td>${eventStart}</td>
     <td>${eventEnd}</td>
-    <td>${eventDate}</td>
     <td class="action-icons">
       <i class="fas fa-edit" title="Edit"></i>
       <i class="fas fa-trash-alt" title="Delete" onclick="confirmEventDelete('${eventId}')"></i>
@@ -510,7 +504,7 @@ function openEditEventModal(eventId, name, venue, day, startTime, endTime, date)
   document.getElementById("edit_event_id").value = eventId;
   document.getElementById("edit_event_name").value = name;
   document.getElementById("edit_event_venue").value = venue;
-  document.getElementById("edit_event_day").value = day;
+  document.getElementById("edit_event_date").value = day;
   document.getElementById("edit_event_start").value = startTime;
   document.getElementById("edit_event_end").value = endTime;
   document.getElementById("edit_event_date").value = date;
@@ -572,10 +566,9 @@ document.getElementById('editEventForm').addEventListener('submit', function(e) 
   const eventId = document.getElementById('edit_event_id').value.trim();
   const eventName = document.getElementById('edit_event_name').value.trim();
   const eventVenue = document.getElementById('edit_event_venue').value.trim();
-  const eventDays = document.getElementById('edit_event_day').value.trim();
+  const eventDate = document.getElementById('edit_event_date').value.trim();
   const eventStart = document.getElementById('edit_event_start').value.trim();
   const eventEnd = document.getElementById('edit_event_end').value.trim();
-  const eventDate = document.getElementById('edit_event_date').value.trim();
 
   // Find the table row with the original event ID
   const rows = document.querySelectorAll('#eventTableBody tr');
@@ -588,7 +581,6 @@ document.getElementById('editEventForm').addEventListener('submit', function(e) 
       row.children[3].textContent = eventDays;
       row.children[4].textContent = eventStart;
       row.children[5].textContent = eventEnd;
-      row.children[6].textContent = eventDate;
       break; // Stop loop once found and updated
     }
   }
@@ -679,10 +671,9 @@ document.getElementById("editEventForm").addEventListener("submit", function(e) 
       <input type="text" id="edit_event_id" name="event_id" placeholder="Event ID" />
       <input type="text" id="edit_event_name" name="event_name" placeholder="Event Name" />
       <input type="text" id="edit_event_venue" name="event_venue" placeholder="Venue" />
-      <input type="text" id="edit_event_day" name="event_days" placeholder="Event Day(s)" />
+      <input type="date" id="edit_event_date" name="event_date" placeholder="Event Date" />
       <input type="time" id="edit_event_start" name="event_start" />
       <input type="time" id="edit_event_end" name="event_end" />
-      <input type="date" id="edit_event_date" name="event_date" />
       <div class="btn-row">
         <button type="submit" class="btn">Save Changes</button>
         <button type="button" class="btn" onclick="closeEditEventModal()" style="background-color: gray;">Cancel</button>
