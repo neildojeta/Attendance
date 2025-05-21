@@ -325,98 +325,104 @@ function addEvent() {
   hidePopup();
   attachEditListeners(); // bind edit events to new row
 }
+</script>
 
-// Edit Event Modal open/close and populate fields
-function openEditEventModal(eventId, name, venue, day, startTime, endTime, date) {
+<script>
+// Open the Edit Event modal and populate the form
+function openEditEventModal(eventId, name, venue, date, startTime, endTime) {
   document.getElementById("edit_event_original_id").value = eventId;
   document.getElementById("edit_event_id").value = eventId;
   document.getElementById("edit_event_name").value = name;
   document.getElementById("edit_event_venue").value = venue;
-  document.getElementById("edit_event_date").value = day;
+  document.getElementById("edit_event_date").value = date;
   document.getElementById("edit_event_start").value = startTime;
   document.getElementById("edit_event_end").value = endTime;
-  document.getElementById("edit_event_date").value = date;
 
   document.getElementById("editEventModal").style.display = "flex";
 }
+
+// Close the modal
 function closeEditEventModal() {
   document.getElementById("editEventModal").style.display = "none";
 }
 
-// Confirm Delete Event with fetch and reload
-function confirmEventDelete(eventId) {
-  if (confirm("Are you sure you want to delete this event?")) {
-    fetch(`/delete_event/${eventId}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': '{{ csrf_token }}'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('Event deleted!');
-        location.reload();
-      } else {
-        alert('Delete failed: ' + data.error);
-      }
-    });
-  }
-}
-
-// Attach edit icon listeners to open edit modal
-function attachEditListeners() {
-  document.querySelectorAll('.fa-edit').forEach(editIcon => {
-    editIcon.addEventListener('click', () => {
-      const row = editIcon.closest('tr');
+// Wait for DOM to load
+document.addEventListener("DOMContentLoaded", function () {
+  // Add click listeners to all edit icons
+  document.querySelectorAll(".fa-edit").forEach(function (editIcon) {
+    editIcon.addEventListener("click", function () {
+      const row = editIcon.closest("tr");
       const eventId = row.children[0].textContent.trim();
       const name = row.children[1].textContent.trim();
       const venue = row.children[2].textContent.trim();
-      const day = row.children[3].textContent.trim();
+      const date = row.children[3].textContent.trim();
       const startTime = row.children[4].textContent.trim();
       const endTime = row.children[5].textContent.trim();
-      const date = row.children[6].textContent.trim();
 
-      openEditEventModal(eventId, name, venue, day, startTime, endTime, date);
+      openEditEventModal(eventId, name, venue, date, startTime, endTime);
     });
   });
-}
-attachEditListeners(); // Initial binding on page load
 
-// Listen for the Edit Event form submission
-document.getElementById('editEventForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // Prevent default form submission (page reload)
+  // Handle form submission
+  document.getElementById("editEventForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-  // Get original event ID (to find the row to update)
-  const originalId = document.getElementById('edit_event_original_id').value;
+  const formData = new FormData(this);
 
-  // Get updated values from the form inputs
-  const eventId = document.getElementById('edit_event_id').value.trim();
-  const eventName = document.getElementById('edit_event_name').value.trim();
-  const eventVenue = document.getElementById('edit_event_venue').value.trim();
-  const eventDate = document.getElementById('edit_event_date').value.trim();
-  const eventStart = document.getElementById('edit_event_start').value.trim();
-  const eventEnd = document.getElementById('edit_event_end').value.trim();
-
-  // Find the table row with the original event ID
-  const rows = document.querySelectorAll('#eventTableBody tr');
-  for (const row of rows) {
-    if (row.children[0].textContent.trim() === originalId) {
-      // Update the row cells with the new values from the form
-      row.children[0].textContent = eventId;
-      row.children[1].textContent = eventName;
-      row.children[2].textContent = eventVenue;
-      row.children[3].textContent = eventDays;
-      row.children[4].textContent = eventStart;
-      row.children[5].textContent = eventEnd;
-      break; // Stop loop once found and updated
+  fetch("/update_events/", {
+  method: "POST",
+  headers: {
+    "X-CSRFToken": getCSRFToken()
+  },
+  body: formData
+})
+.then(response => response.text())  // get raw text instead of json
+.then(text => {
+  console.log("Server response:", text); // Check what the server actually sent
+  try {
+    const data = JSON.parse(text);
+    if (data.success) {
+      alert("Event updated successfully!");
+      location.reload();
+    } else {
+      alert("Update failed: " + (data.error || "Unknown error"));
     }
+  } catch (err) {
+    alert("Error parsing response JSON: " + err);
   }
-
-  // Close the Edit Event modal popup
-  closeEditEventModal();
+})
+.catch(error => {
+  alert("Error updating event: " + error);
 });
 
+});
+
+});
+</script>
+
+
+
+<script>
+  // Confirm Delete Event with fetch and reload
+  function confirmEventDelete(eventId) {
+    if (confirm("Are you sure you want to delete this event?")) {
+      fetch(`/delete_event/${eventId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Event deleted!');
+          location.reload();
+        } else {
+          alert('Delete failed: ' + data.error);
+        }
+      });
+    }
+  }
 </script>
 
 <script>
@@ -464,51 +470,49 @@ document.getElementById('addEventForm').addEventListener('submit', function(e) {
   });
 });
 
-// Submit Edit Event Form (using fetch and CSRF token)
-document.getElementById("editEventForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-
-  fetch("{% url 'update_event' %}", {
-    method: "POST",
-    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-    body: formData,
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert("Event updated successfully!");
-      location.reload();
-    } else {
-      alert("Update failed: " + data.error);
-    }
-  })
-  .catch(error => {
-    alert("Error: " + error);
-  });
-});
 </script>
 
-<!-- Edit Event Modal -->
-<div class="popup" id="editEventModal" style="display:none;">
-  <div class="popup-content">
-    <h3>Edit Event</h3>
-    <form id="editEventForm">
-      {% csrf_token %}
-      <input type="hidden" id="edit_event_original_id" name="original_event_id" />
-      <input type="text" id="edit_event_id" name="event_id" placeholder="Event ID" />
-      <input type="text" id="edit_event_name" name="event_name" placeholder="Event Name" />
-      <input type="text" id="edit_event_venue" name="event_venue" placeholder="Venue" />
-      <input type="date" id="edit_event_date" name="event_date" placeholder="Event Date" />
-      <input type="time" id="edit_event_start" name="event_start" />
-      <input type="time" id="edit_event_end" name="event_end" />
-      <div class="btn-row">
-        <button type="submit" class="btn">Save Changes</button>
-        <button type="button" class="btn" onclick="closeEditEventModal()" style="background-color: gray;">Cancel</button>
-      </div>
-    </form>
-  </div>
+<div id="editEventModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+   background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">   
+
+   <div style="background:white; padding:30px; border-radius:10px; width:400px; box-shadow:0 5px 15px rgba(0,0,0,0.3); position:relative;">
+       <h2 style="margin-bottom:20px; text-align:center; color:#333;">Edit Event</h2>
+       <form id="editEventForm" method="post">
+           {% csrf_token %}
+           <input type="hidden" name="original_event_id" id="edit_event_original_id">
+
+           <label for="edit_event_id" style="font-weight:bold;">Event ID:</label>
+           <input type="text" name="event_id" id="edit_event_id" required 
+                  style="width:100%; padding:8px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:5px;">
+
+           <label for="edit_event_name" style="font-weight:bold;">Event Name:</label>
+           <input type="text" name="event_name" id="edit_event_name" required 
+                  style="width:100%; padding:8px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:5px;">
+            
+           <label for="edit_event_venue" style="font-weight:bold;">Venue:</label>
+           <input type="text" name="event_venue" id="edit_event_venue" required 
+                  style="width:100%; padding:8px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:5px;">
+           
+           <label for="edit_event_date" style="font-weight:bold;">Event Date:</label>
+           <input type="date" name="event_date" id="edit_event_date" required 
+                  style="width:100%; padding:8px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:5px;">
+
+           <label for="edit_event_start" style="font-weight:bold;">Start Time:</label>
+           <input type="time" name="event_start" id="edit_event_start" required 
+                  style="width:100%; padding:8px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:5px;">
+
+           <label for="edit_event_end" style="font-weight:bold;">End Time:</label>
+           <input type="time" name="event_end" id="edit_event_end" required 
+                  style="width:100%; padding:8px; margin:5px 0 15px 0; border:1px solid #ccc; border-radius:5px;">
+
+           <div style="text-align:right;">
+               <button type="submit" style="padding:8px 16px; background-color:#2196F3; color:white; border:none; border-radius:5px; cursor:pointer; margin-right:10px;">Save Changes</button>
+               <button type="button" onclick="closeEditEventModal()" style="padding:8px 16px; background-color:#f44336; color:white; border:none; border-radius:5px; cursor:pointer;">Cancel</button>
+           </div>
+       </form>
+   </div>
 </div>
+
 
 </body>
 </html>

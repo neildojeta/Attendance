@@ -42,10 +42,9 @@ def add_event(request):
 @csrf_exempt
 def update_event(request):
     if request.method == "POST":
-        event_id = request.POST.get("event_id")
         event_name = request.POST.get("event_name")
         venue = request.POST.get("venue")
-        vdays = request.POST.get("vday")
+        vday = request.POST.get("vday")
         vstart_time = request.POST.get("vstart_time")
         vend_time = request.POST.get("vend_time")
 
@@ -58,7 +57,7 @@ def update_event(request):
                     SET event_name=%s, venue=%s, vday=%s, vstart_time=%s, vend_time=%s
                     WHERE event_id=%s
                 """
-                cursor.execute(sql, (event_name, venue, vdays, vstart_time, vend_time, event_id))
+                cursor.execute(sql, (event_name, venue, vday, vstart_time, vend_time))
                 conn.commit()
                 return JsonResponse({"success": True})
             except mysql.connector.Error as err:
@@ -68,6 +67,7 @@ def update_event(request):
                 conn.close()
         else:
             return JsonResponse({"success": False, "error": "Database connection failed."})
+    return JsonResponse({"success": False, "error": "Invalid request method."})
 
 @csrf_exempt
 def delete_event(request, event_id):
