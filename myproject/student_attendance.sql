@@ -292,7 +292,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('5lgbcntvxg4qaou4b5k3yul5bm21nho5','eyJ1c2VybmFtZSI6ImFkbWluIn0:1uDDrp:lN-4S5MX8U2e6TgRt4qHY2sdmA2n8DmV2CTHP0iTvg4','2025-05-23 02:53:41.348753'),('jms3pv2gq0qesrnh1j9vo0dxukxhy1ut','eyJ1c2VybmFtZSI6ImFkbWluIn0:1tzqvb:ZGVXg2RMS9tu1Sws5joJA7Qd4yqXkbWITYxJPHE1k5U','2025-04-16 05:46:19.416358');
+INSERT INTO `django_session` VALUES ('5lgbcntvxg4qaou4b5k3yul5bm21nho5','eyJ1c2VybmFtZSI6ImFkbWluIn0:1uHaH3:1X6ebr7nkZsUgUrRASfejRzWoSz7A7tDIkgYbQplQT0','2025-06-04 03:37:45.284472'),('jms3pv2gq0qesrnh1j9vo0dxukxhy1ut','eyJ1c2VybmFtZSI6ImFkbWluIn0:1tzqvb:ZGVXg2RMS9tu1Sws5joJA7Qd4yqXkbWITYxJPHE1k5U','2025-04-16 05:46:19.416358');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,15 +332,15 @@ DROP TABLE IF EXISTS `events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `events` (
-  `event_id` int NOT NULL,
+  `event_id` int NOT NULL AUTO_INCREMENT,
   `event_name` varchar(255) DEFAULT NULL,
   `venue` varchar(255) DEFAULT NULL,
-  `vday(s)` varchar(45) DEFAULT NULL,
+  `vday` date DEFAULT NULL,
   `vstart_time` time DEFAULT NULL,
   `vend_time` time DEFAULT NULL,
   PRIMARY KEY (`event_id`),
   UNIQUE KEY `event_name_UNIQUE` (`event_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -349,6 +349,7 @@ CREATE TABLE `events` (
 
 LOCK TABLES `events` WRITE;
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
+INSERT INTO `events` VALUES (19,'fhgfh','ASD','2025-05-09','14:05:00','02:05:00'),(20,'helllo','asdasdas','2025-05-21','11:19:00','23:19:00'),(21,'gfhfgh','ASD','2025-05-03','11:29:00','23:29:00'),(22,'one two','three','2025-05-23','11:43:00','23:43:00'),(23,'same','ASD','2025-05-21','11:43:00','23:43:00');
 /*!40000 ALTER TABLE `events` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,7 +370,7 @@ CREATE TABLE `faculty` (
   `faddress` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`faculty_id`),
   UNIQUE KEY `faculty_id_UNIQUE` (`faculty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=566 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -673,4 +674,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-09 16:58:03
+-- Dump completed on 2025-05-21 13:47:35
