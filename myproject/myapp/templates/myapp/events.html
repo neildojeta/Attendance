@@ -9,222 +9,13 @@
 
   <!-- Fonts & Icons -->
   <link rel="stylesheet" href="{% static 'myapp/admin.css' %}">
+  <link rel="stylesheet" href="{% static 'myapp/events.css' %}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <!-- Inline Styles -->
-  <style>
-    /* === Base Layout === */
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-    }
-
-    .main-wrapper {
-      margin-left: 100px;
-      padding: 40px;
-      width: calc(100% - 150px);
-    }
-
-    .dashboard-container {
-      padding: 30px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    /* === Buttons === */
-    .btn {
-      background-color: #b30000;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #990000;
-    }
-
-    /* === Calendar Styles === */
-    .calendar-section {
-      margin-top: 30px;
-    }
-
-    .calendar {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .month {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      background: crimson;
-      color: white;
-    }
-
-    .month button {
-      background: transparent;
-      border: none;
-      font-size: 24px;
-      color: white;
-      cursor: pointer;
-    }
-
-    .weekdays, .days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-    }
-
-    .weekdays div {
-      padding: 10px 0;
-      background: #eee;
-      font-weight: 600;
-    }
-
-    .days div {
-      padding: 15px 0;
-      cursor: pointer;
-      transition: 0.3s;
-      color: black;
-    }
-
-    .days div.highlighted {
-      background-color: gold;
-      color: crimson;
-      border-radius: 50%;
-      font-weight: bold;
-    }
-
-    .days div.today {
-      border-bottom: 3px solid red;
-    }
-
-    /* === Popup Form === */
-    .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .popup-content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    .popup-content input,
-    .popup-content select {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .popup-content .btn-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-
-    .popup-content .btn-row .btn {
-      flex: 1;
-      margin: 0 5px;
-    }
-
-    /* === Table Section === */
-    .table-title {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-top: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .search-bar {
-      display: flex;
-      gap: 10px;
-    }
-
-    .search-bar input[type="text"] {
-      padding: 5px 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .search-bar button {
-      padding: 6px 12px;
-      font-size: 1em;
-      background-color: #007BFF;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .search-bar button:hover {
-      background-color: #0056b3;
-    }
-
-    .scrollable-table {
-      max-height: 300px;
-      overflow-y: auto;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-
-    table.styled-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    table.styled-table thead {
-      position: sticky;
-      top: 0;
-      background-color: #ddd;
-    }
-
-    table.styled-table th, table.styled-table td {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .action-icons i {
-      margin-right: 10px;
-      cursor: pointer;
-      color: #333;
-    }
-
-    .action-icons i:hover {
-      color: #007BFF;
-    }
-  </style>
 </head>
 
 <body>
-
+  {{ highlighted_date|json_script:"highlighted-dates" }}
   <!-- Main Wrapper -->
   <div class="main-wrapper">
     <div class="dashboard-container">
@@ -393,53 +184,91 @@
 
 </script>
 
+<!-- <script id="highlighted-dates" type="application/json">
+  {{ highlighted_date|json_script:"highlighted-dates" }}
+</script> -->
+
 <script>
   // Scripts
-const popup = document.getElementById('popup');
-const calendarDays = document.getElementById("calendar-days");
-const monthYear = document.getElementById("month-year");
-const prevBtn = document.getElementById("prev");
-const nextBtn = document.getElementById("next");
+  const popup = document.getElementById('popup');
+  const calendarDays = document.getElementById("calendar-days");
+  const monthYear = document.getElementById("month-year");
+  const prevBtn = document.getElementById("prev");
+  const nextBtn = document.getElementById("next");
 
-let highlightedDates = [];
-let currentDate = new Date();
+  
+  const highlightedDates = JSON.parse(document.getElementById('highlighted-dates').textContent);
+  if (highlightedDates.length === 0) {
+    console.log("No highlighted dates");
+  } else {
+    console.log("Highlighted dates:", highlightedDates);
+  }
+  // let highlightedDates = [];
+  let currentDate = new Date();
 
 
-// Show/hide Add Event popup
-function showPopup() {
-  popup.style.display = 'flex';
-}
-function hidePopup() {
-  popup.style.display = 'none';
-}
-
-// Render calendar with highlights and today mark
-function renderCalendar(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const today = new Date();
-  const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-
-  monthYear.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
-  calendarDays.innerHTML = "";
-
-  for (let i = 0; i < firstDay; i++) {
-    calendarDays.innerHTML += `<div></div>`;
+  // Show/hide Add Event popup
+  function showPopup() {
+    popup.style.display = 'flex';
+  }
+  function hidePopup() {
+    popup.style.display = 'none';
   }
 
-  for (let d = 1; d <= lastDate; d++) {
-    const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
-    let classes = [];
+  // Render calendar with highlights and today mark
+  function renderCalendar(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
 
-    if (highlightedDates.includes(dateStr)) classes.push("highlighted");
-    if (dateStr === todayStr) classes.push("today");
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
 
-    calendarDays.innerHTML += `<div class="${classes.join(' ')}">${d}</div>`;
-  }
+    monthYear.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+    calendarDays.innerHTML = "";
+
+    for (let i = 0; i < firstDay; i++) {
+      calendarDays.innerHTML += `<div></div>`;
+    }
+
+    for (let d = 1; d <= lastDate; d++) {
+      // const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
+      const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
+      let classes = [];
+
+      
+      if (highlightedDates.includes(dateStr)) classes.push("highlighted");
+      if (dateStr === todayStr) classes.push("today");
+
+      // calendarDays.innerHTML += `<div class="${classes.join(' ')}">${d}</div>`;
+      calendarDays.innerHTML += `<div class="${classes.join(' ')}" data-date="${dateStr}" onclick="filterEventsByDate('${dateStr}')">${d}</div>`;
+      
+
+    }
 }
+
+function filterEventsByDate(dateStr) {
+    const rows = document.querySelectorAll('#eventTableBody tr');
+
+    rows.forEach(row => {
+      const eventDateRaw = row.children[3]?.textContent.trim(); // column 4
+      const eventDate = formatDateToISO(eventDateRaw);
+      row.style.display = (eventDate === dateStr) ? '' : 'none';
+    });
+
+    document.getElementById('search-event').value = '';
+  }
+
+  // Convert any common format to YYYY-MM-DD
+  function formatDateToISO(dateString) {
+    const parsedDate = new Date(dateString);
+    if (isNaN(parsedDate)) return ''; // Invalid date
+    const year = parsedDate.getFullYear();
+    const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(parsedDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
 // Prev/Next buttons change month
 prevBtn.addEventListener("click", () => {
@@ -450,7 +279,6 @@ nextBtn.addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
   renderCalendar(currentDate);
 });
-
 renderCalendar(currentDate);
 
 // Add Event - validate input, add row, highlight date, re-render calendar

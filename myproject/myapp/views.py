@@ -43,6 +43,7 @@ def admin_dashboard(request):
     student_records_data = []
     faculty_data = []
     event_data = []
+    highlighted_date = []
     programs = []
     yearlvls = []
 
@@ -56,6 +57,7 @@ def admin_dashboard(request):
     if conn:
         try:
             cursor = conn.cursor()
+            hcursor = conn.cursor()
 
             if tab == 'students':
                 if search_students:
@@ -114,6 +116,12 @@ def admin_dashboard(request):
                         FROM events
                     """)
                 event_data = cursor.fetchall()
+                # Then fetch only the vday values
+                cursor.execute("SELECT vday FROM events")
+                highlighted_date = [d[0] for d in cursor.fetchall() if d[0]]
+                for date in highlighted_date:
+                    print(date)
+
 
             # Fetch dropdown data
             cursor.execute("SELECT programcode FROM programs")
@@ -133,6 +141,7 @@ def admin_dashboard(request):
         "search_students": search_students,
         "search_faculty": search_faculty,
         "search_events": search_events,
+        "highlighted_date": highlighted_date,
         "event_data": event_data,
         "programs": programs,
         "yearlvls": yearlvls,
@@ -160,105 +169,4 @@ def faculty_dashboard(request):
     tab = request.GET.get('tab', '')
     return render(request, "myapp/faculty_dashboard.html", {"tab": tab})
 
-
-# ========== EVENT VIEWS ==========
-
-# # @csrf_exempt
-# def add_event(request):
-#     print("✅ add_event() called")
-
-#     if request.method == "POST":
-#         # event_id = request.POST.get("event_id")
-#         event_name = request.POST.get("event_name")
-#         venue = request.POST.get("venue")
-#         vdays = request.POST.get("vday_s")  # Use safe key name (HTML can't use "vday(s)")
-#         vstart_time = request.POST.get("vstart_time")
-#         vend_time = request.POST.get("vend_time")
-
-#         conn = create_connection()
-#         if conn:
-#             try:
-#                 cursor = conn.cursor()
-#                 sql = """
-#                     INSERT INTO events (event_name, venue, vday, vstart_time, vend_time)
-#                     VALUES (%s, %s, %s, %s, %s)
-#                 """
-#                 cursor.execute(sql, (event_name, venue, vdays, vstart_time, vend_time))
-#                 conn.commit()
-#                 return JsonResponse({"success": True})
-#             except mysql.connector.Error as err:
-#                 return JsonResponse({"success": False, "error": str(err)})
-#             finally:
-#                 cursor.close()
-#                 conn.close()
-#         else:
-#             return JsonResponse({"success": False, "error": "Database connection failed."})
-
-
-# @csrf_exempt
-# def update_event(request):
-#     if request.method == "POST":
-#         event_id = request.POST.get("event_id")
-#         event_name = request.POST.get("event_name")
-#         venue = request.POST.get("venue")
-#         vdays = request.POST.get("vday_s")
-#         vstart_time = request.POST.get("vstart_time")
-#         vend_time = request.POST.get("vend_time")
-
-#         conn = create_connection()
-#         if conn:
-#             try:
-#                 cursor = conn.cursor()
-#                 sql = """
-#                     UPDATE events
-#                     SET event_name=%s, venue=%s, `vday(s)`=%s, vstart_time=%s, vend_time=%s
-#                     WHERE event_id=%s
-#                 """
-#                 cursor.execute(sql, (event_name, venue, vdays, vstart_time, vend_time, event_id))
-#                 conn.commit()
-#                 return JsonResponse({"success": True})
-#             except mysql.connector.Error as err:
-#                 return JsonResponse({"success": False, "error": str(err)})
-#             finally:
-#                 cursor.close()
-#                 conn.close()
-#         else:
-#             return JsonResponse({"success": False, "error": "Database connection failed."})
-
-
-
-# @csrf_exempt
-# def delete_event(request, event_id):
-#     if request.method == "POST":
-#         conn = create_connection()
-#         if conn:
-#             try:
-#                 cursor = conn.cursor()
-#                 sql = "DELETE FROM events WHERE event_id = %s"
-#                 cursor.execute(sql, (event_id,))
-#                 conn.commit()
-#                 return JsonResponse({"success": True})
-#             except mysql.connector.Error as err:
-#                 return JsonResponse({"success": False, "error": str(err)})
-#             finally:
-#                 conn.close()
-#         else:
-#             return JsonResponse({"success": False, "error": "Database connection failed."})
-        
-# from django.http import JsonResponse
-# from db_config import create_connection
-  
-# # Adjust if your DB connection function is named differently
-
-# def test_event_connection(request):
-#     try:
-#         conn = create_connection()
-#         cursor = conn.cursor()
-#         cursor.execute("SELECT * FROM events")  # Replace 'events' with your actual table name
-#         data = cursor.fetchall()
-#         return JsonResponse({"connected": True, "event_count": len(data)})
-#     except Exception as e:
-#         return JsonResponse({"connected": False, "error": str(e)})
-
-    
 
